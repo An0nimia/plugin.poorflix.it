@@ -619,7 +619,7 @@ def list_mirros_movie(title, metadata_art, metadata_movie, metadata_cast):
 						pp720,
 						pp480,
 						pp360,
-						alls
+						aalls
 					)
 				)
 
