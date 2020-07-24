@@ -1,0 +1,100 @@
+from settings import movieDB_api_key
+from TheMovieDB import MovieDB, utils as moviedbutils
+
+moviedb = MovieDB(movieDB_api_key)
+
+def get_infos_movie(movie_id):
+	movie_data = moviedb.get_movie(movie_id, "it")
+	cast_data = moviedb.get_cast_movie(movie_id)['cast']
+
+	metadata_art = {
+		"poster": moviedbutils.get_image(movie_data['poster_path']),
+		"fanart": moviedbutils.get_image(movie_data['backdrop_path'])
+	}
+
+	metadata_movie = {
+		"genre": moviedbutils.get_genres(movie_data['genres']),
+		"country": moviedbutils.get_countries(movie_data['production_countries']),
+		"year": movie_data['release_date'],
+		"rating": movie_data['vote_average'],
+		"plot": movie_data['overview'],
+		"duration": movie_data['runtime'],
+		"imdbnumber": movie_data['imdb_id'],
+		"studio": moviedbutils.get_companies(movie_data['production_companies']),
+		"tagline": movie_data['tagline'],
+		"title": movie_data['original_title'],
+		"votes": movie_data['vote_count'],
+		"mediatype": "movie"
+	}
+
+	metadata_cast = moviedbutils.get_cast_dict(cast_data)
+	return metadata_art, metadata_movie, metadata_cast
+
+def get_infos_tvshow(tvshow_id):
+	tvshow_data = moviedb.get_tvshow(tvshow_id, "it")
+	cast_data = moviedb.get_cast_tvshow(tvshow_id)['cast']
+
+	metadata_art = {
+		"poster": moviedbutils.get_image(tvshow_data['poster_path']),
+		"fanart": moviedbutils.get_image(tvshow_data['backdrop_path'])
+	}
+
+	metadata_movie = {
+		"genre": moviedbutils.get_genres(tvshow_data['genres']),
+		"year": tvshow_data['first_air_date'],
+		"episode": tvshow_data['number_of_episodes'],
+		"season": tvshow_data['number_of_seasons'],
+		"setid": tvshow_data['id'],
+		"rating": tvshow_data['vote_average'],
+		"plot": tvshow_data['overview'],
+		"studio": moviedbutils.get_companies(tvshow_data['production_companies']),
+		"writer": moviedbutils.get_creators(tvshow_data['created_by']),
+		"tvshowtitle": tvshow_data['name'],
+		"status": tvshow_data['status'],
+		"votes": tvshow_data['vote_count'],
+		"mediatype": "tvshow"
+	}
+
+	metadata_cast = moviedbutils.get_cast_dict(cast_data)
+	seasons = tvshow_data['seasons']
+	return metadata_art, metadata_movie, metadata_cast, seasons
+
+def get_infos_season(tvshow_id, season):
+	season_number = season['season_number']
+	cast_data = moviedb.get_cast_season(tvshow_id, season_number)['cast']
+
+	metadata_art = {
+		"poster": moviedbutils.get_image(season['poster_path']),
+	}
+
+	metadata_movie = {
+		"year": season['air_date'],
+		"episode": season['episode_count'],
+		"plot": season['overview'],
+		"title": season['name'],
+		"mediatype": "tvshow"
+	}
+
+	metadata_cast = moviedbutils.get_cast_dict(cast_data)
+	return metadata_art, metadata_movie, metadata_cast
+
+def get_infos_episode(tvshow_id, episode):
+	season_number = episode['season_number']
+	episode_number = episode['episode_number']
+	cast_data = moviedb.get_cast_episode(tvshow_id, season_number, episode_number)['cast']
+
+	metadata_art = {
+		"poster": moviedbutils.get_image(episode['still_path']),
+	}
+
+	metadata_movie = {
+		"year": episode['air_date'],
+		"rating": episode['vote_average'],
+		"plot": episode['overview'],
+		"title": episode['name'],
+		"votes": episode['vote_count'],
+		"mediatype": "tvshow"
+	}
+
+	metadata_cast = moviedbutils.get_cast_dict(cast_data)
+	return metadata_art, metadata_movie, metadata_cast
