@@ -553,18 +553,15 @@ def list_mirros_movie(title, metadata_art, metadata_movie, metadata_cast):
 	l_results = len(sites_film)
 	times = 1
 	mirrors = []
-	p360 = 0
-	pp360 = "[COLOR red]%d[/COLOR]" % p360
-	p480 = 0
-	pp480 = "[COLOR red]%d[/COLOR]" % p480
-	p720 = 0
-	pp720 = "[COLOR red]%d[/COLOR]" % p720
-	p1080 = 0
-	pp1080 = "[COLOR red]%d[/COLOR]" % p1080
-	k4 = 0
-	kk4 = "[COLOR red]%d[/COLOR]" % k4
-	alls = 0
-	aalls = "[COLOR red]%d[/COLOR]" % alls
+
+	qualities = [
+		[0, "[COLOR red]0[/COLOR]", "360p"],
+		[0, "[COLOR red]0[/COLOR]", "480p"],
+		[0, "[COLOR red]0[/COLOR]", "720p"],
+		[0, "[COLOR red]0[/COLOR]", "1080p"],
+		[0, "[COLOR red]0[/COLOR]", "4k"],
+		[0, "[COLOR red]0[/COLOR]"]
+	]
 
 	short_title = " ".join(
 		title.split(" ")[0:]
@@ -587,39 +584,25 @@ def list_mirros_movie(title, metadata_art, metadata_movie, metadata_cast):
 			current_mirrors = a.search_mirrors(link)['results']
 		
 			for b in current_mirrors:
-				if b['quality'] == "360p":
-					p360 += 1
-					pp360 = "[COLOR green]%d[/COLOR]" % p360
+				for c in qualities:
+					if b['quality'] == c[2]:
+						c[0] += 1
+						c[1] = "[COLOR green]%d[/COLOR]" % c[0]
+						break
 
-				elif b['quality'] == "480p":
-					p480 += 1
-					pp480 = "[COLOR green]%d[/COLOR]" % p480
-
-				elif b['quality'] == "720p":
-					p720 += 1
-					pp720 = "[COLOR green]%d[/COLOR]" % p720
-
-				elif b['quality'] == "1080p":
-					p1080 += 1
-					pp1080 = "[COLOR green]%d[/COLOR]" % p1080
-
-				elif b['quality'] == "4k":
-					k4 += 1
-					kk4 = "[COLOR green]%d[/COLOR]" % k4
-
-				else:
-					alls += 1
-					aalls = "[COLOR green]%d[/COLOR]" % alls
+				alls = qualities[-1]
+				alls[0] += 1
+				alls[1] = "[COLOR green]%d[/COLOR]" % alls[0]
 
 				new_string = (
 					"4k: %s | 1080p: %s | 720p: %s | 480p: %s | 360p: %s | Total: %s"
 					% (
-						kk4,
-						pp1080,
-						pp720,
-						pp480,
-						pp360,
-						aalls
+						qualities[4][1],
+						qualities[3][1],
+						qualities[2][1],
+						qualities[1][1],
+						qualities[0][1],
+						alls[1]
 					)
 				)
 
@@ -675,7 +658,6 @@ def play_video(link, mirror, title):
 		)
 
 		xbmcplugin.setResolvedUrl(_handle, True, play_item)
-		#xbmc.sleep(20000)
 	except VideoNotAvalaible:
 		dialog = xbmcgui.Dialog()
 
