@@ -249,7 +249,7 @@ def search_tvshow(mode = 0, topic = None, genre = None, year = None):
 		try:
 			url = get_url(
 				action = "show seasons", title = title,
-				tvshow_id = metadata_movie['setid'], seasons = seasons
+				tvshow_id = tvshow_id, seasons = seasons
 			)
 
 			is_folder = True
@@ -584,7 +584,7 @@ def list_mirros_movie(title, metadata_art, metadata_movie, metadata_cast):
 			current_mirrors = a.search_mirrors(link)['results']
 		
 			for b in current_mirrors:
-				for c in qualities:
+				for c in qualities[:-1]:
 					if b['quality'] == c[2]:
 						c[0] += 1
 						c[1] = "[COLOR green]%d[/COLOR]" % c[0]
@@ -688,6 +688,10 @@ def router(paramstring):
 
 		elif params['action'] == settings.film_menu_items[1][0]:
 			topic = show_keyboard()
+
+			if not topic:
+				return
+
 			search_person(topic, "movies")
 
 		elif params['action'] == settings.film_menu_items[2][0]:
@@ -721,6 +725,10 @@ def router(paramstring):
 
 		elif params['action'] == settings.tvshow_menu_items[1][0]:
 			topic = show_keyboard()
+
+			if not topic:
+				return
+
 			search_person(topic, "tvshows")
 
 		elif params['action'] == settings.tvshow_menu_items[2][0]:
