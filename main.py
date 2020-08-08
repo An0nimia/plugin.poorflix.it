@@ -135,18 +135,23 @@ def search_movie(mode = 0, topic = None, genre = None, year = None):
 	if mode == 1:
 		results = moviedb.get_movie_popular("it")
 		message = messages['movie']['popular']
+	
 	elif mode == 2:
 		results = moviedb.get_movie_top_rated("it")
 		message = messages['movie']['top_rated']
+
 	elif mode == 3:
 		results = moviedb.get_movie_discover("it")
 		message = messages['movie']['discover']
+
 	elif mode == 4:
 		results = moviedb.get_movie_discover("it", genres = [genre])
 		message = messages['movie']['genre']
+
 	elif mode == 5:
 		results = moviedb.get_movie_discover("it", year = year)
 		message = messages['movie']['year']
+
 	else:
 		results = moviedb.search_movie(topic, "it")
 		message = messages['movie']['default']
@@ -201,18 +206,23 @@ def search_tvshow(mode = 0, topic = None, genre = None, year = None):
 	if mode == 1:
 		results = moviedb.get_tvshow_popular("it")
 		message = messages['tvshow']['popular']
+
 	elif mode == 2:
 		results = moviedb.get_tvshow_top_rated("it")
 		message = messages['tvshow']['top_rated']
+
 	elif mode == 3:
 		results = moviedb.get_tvshow_discover("it")
 		message = messages['tvshow']['discover']
+
 	elif mode == 4:
 		results = moviedb.get_tvshow_discover("it", genres = [genre])
 		message = messages['tvshow']['genre']
+	
 	elif mode == 5:
 		results = moviedb.get_tvshow_discover("it", year = year)
 		message = messages['tvshow']['year']
+	
 	else:
 		results = moviedb.search_tvshow(topic, "it")
 		message = messages['tvshow']['default']
@@ -572,6 +582,7 @@ def list_mirros_movie(title, metadata_art, metadata_movie, metadata_cast):
 			return
 
 		progress = 100 * times // l_results
+		link = None
 
 		try:
 			results = a.search_film(title)['results']
@@ -581,8 +592,11 @@ def list_mirros_movie(title, metadata_art, metadata_movie, metadata_cast):
 					link = b['link']
 					break
 
+			if not link:
+				link = results[0]['link']
+
 			current_mirrors = a.search_mirrors(link)['results']
-		
+
 			for b in current_mirrors:
 				for c in qualities[:-1]:
 					if b['quality'] == c[2]:
@@ -609,7 +623,7 @@ def list_mirros_movie(title, metadata_art, metadata_movie, metadata_cast):
 				pDialog.update(progress, new_string)
 
 			mirrors += current_mirrors
-		except (IndexError, AttributeError, UnboundLocalError):
+		except IndexError:
 			pass
 
 		times += 1

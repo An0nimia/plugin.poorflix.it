@@ -2,6 +2,7 @@
 
 from re import findall
 from requests import get
+from exceptions.exceptions import VideoNotAvalaible
 
 class Metadata:
 	def __init__(self):
@@ -21,8 +22,16 @@ def get_video(url):
 	url = get_emb(url)
 	body = get(url).text
 
-	video_url =  findall(
+	videos =  findall(
 		r"file:[^']'([^']+)',\s*label:[^\"]\"([^\"]+)\"", body
 	)
 
-	return video_url
+	if not videos:
+		raise VideoNotAvalaible(url)
+
+	if videos[1][1] == "HD":
+		return videos[1][0]
+	elif videos[0][1] == "NORMAL":
+		return videos[0][0]
+	elif videos[-1][1] == "MOBILE":
+		return videos[2][0]

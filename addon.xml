@@ -19,5 +19,6 @@
 		<platform>all</platform>
 		<license>CC BY-NC-SA 4.0</license>
 		<news>Si sboccia poveri !!!</news>
+		<source>https://github.com/An0nimia/plugin.poorflix.it</source>
 	</extension>
 </addon>

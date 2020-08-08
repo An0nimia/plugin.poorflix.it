@@ -1,6 +1,7 @@
 #!/usr/bin/python
 
 from requests import get
+from exceptions.exceptions import VideoNotAvalaible
 
 class Metadata:
 	def __init__(self):
@@ -10,11 +11,14 @@ class Metadata:
 def get_video(url):
 	body = get(url).text
 
-	video_url = (
-		body
-		.split("sources: ")[1]
-		.split("file:\"")[1]
-		.split("\"")[0]
-	)
+	try:
+		video_url = (
+			body
+			.split("sources: ")[1]
+			.split("file:\"")[1]
+			.split("\"")[0]
+		)
+	except IndexError:
+		raise VideoNotAvalaible(url)
 
 	return video_url

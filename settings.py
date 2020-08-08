@@ -69,7 +69,7 @@ messages = {
 
 	"stream": {
 		"error_stream_title": "HO SFONDATO IL MURO",
-		"error_stream_text": "MA FARES... STO C... DEVI FUNZIONARE"
+		"error_stream_text": "MA FARESHI STO C... DEVI FUNZIONARE"
 	},
 
 	"person": "Se cercavi Bugo, spoiler non c'è =)",

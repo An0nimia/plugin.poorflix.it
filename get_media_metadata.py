@@ -15,7 +15,6 @@ def get_infos_movie(movie_id):
 	metadata_movie = {
 		"genre": moviedbutils.get_genres(movie_data['genres']),
 		"country": moviedbutils.get_countries(movie_data['production_countries']),
-		"year": movie_data['release_date'],
 		"rating": movie_data['vote_average'],
 		"plot": movie_data['overview'],
 		"duration": movie_data['runtime'],
@@ -23,6 +22,7 @@ def get_infos_movie(movie_id):
 		"studio": moviedbutils.get_companies(movie_data['production_companies']),
 		"tagline": movie_data['tagline'],
 		"title": movie_data['original_title'],
+		"aired": movie_data['release_date'],
 		"votes": movie_data['vote_count'],
 		"mediatype": "movie"
 	}
@@ -40,17 +40,15 @@ def get_infos_tvshow(tvshow_id):
 	}
 
 	metadata_movie = {
-		"genre": moviedbutils.get_genres(tvshow_data['genres']),
-		"year": tvshow_data['first_air_date'],
 		"episode": tvshow_data['number_of_episodes'],
 		"season": tvshow_data['number_of_seasons'],
-		"setid": tvshow_data['id'],
 		"rating": tvshow_data['vote_average'],
 		"plot": tvshow_data['overview'],
 		"studio": moviedbutils.get_companies(tvshow_data['production_companies']),
 		"writer": moviedbutils.get_creators(tvshow_data['created_by']),
 		"tvshowtitle": tvshow_data['name'],
 		"status": tvshow_data['status'],
+		"aired": tvshow_data['first_air_date'],
 		"votes": tvshow_data['vote_count'],
 		"mediatype": "tvshow"
 	}
@@ -68,10 +66,11 @@ def get_infos_season(tvshow_id, season):
 	}
 
 	metadata_movie = {
-		"year": season['air_date'],
 		"episode": season['episode_count'],
+		"season": 1,
 		"plot": season['overview'],
 		"title": season['name'],
+		"aired": season['air_date'],
 		"mediatype": "tvshow"
 	}
 
@@ -88,12 +87,12 @@ def get_infos_episode(tvshow_id, episode):
 	}
 
 	metadata_movie = {
-		"year": episode['air_date'],
 		"rating": episode['vote_average'],
 		"plot": episode['overview'],
 		"title": episode['name'],
 		"votes": episode['vote_count'],
-		"mediatype": "tvshow"
+		"aired": episode['air_date'],
+		"mediatype": "episode"
 	}
 
 	metadata_cast = moviedbutils.get_cast_dict(cast_data)

@@ -1,8 +1,9 @@
 #!/usr/bin/python
-#code a lot inspired by mystream of Plugin for URLResolver, thanks a lot to the devs =)
+#code a lot inspired from mystream of Plugin for URLResolver, thanks a lot to the devs =)
 
-import re
 from requests import get
+from re import search, DOTALL
+from exceptions.exceptions import VideoNotAvalaible
 
 class Metadata:
 	def __init__(self):
@@ -13,7 +14,7 @@ def decode(data):
 	startpos = data.find('"\\""+') + 5
 	endpos = data.find('"\\"")())()')
 	first_group = data[startpos:endpos]
-	pos = re.search(r"(\(!\[\]\+\"\"\)\[.+?\]\+)", first_group)
+	pos = search(r"(\(!\[\]\+\"\"\)\[.+?\]\+)", first_group)
 
 	if pos:
 		first_group = (
@@ -25,7 +26,7 @@ def decode(data):
 		)
 
 		tmplist = []
-		js = re.search(r'(\$={.+?});', data)
+		js = search(r'(\$={.+?});', data)
 
 		if js:
 			js_group = js.group(1)[3:][:-1]
@@ -81,7 +82,12 @@ def get_emb(url):
 def get_video(url):
 	url = get_emb(url)
 	body = get(url).text
-	match = re.search(r'(\$=.+?;)\s*<', body, re.DOTALL).group(1)
+
+	try:
+		match = search(r'(\$=.+?;)\s*<', body, DOTALL).group(1)
+	except AttributeError:
+		raise VideoNotAvalaible(url)
+
 	sdata = decode(match)
-	video_url = re.search(r"src',\s*'([^']+)", sdata).group(1)
+	video_url = search(r"src',\s*'([^']+)", sdata).group(1)
 	return video_url

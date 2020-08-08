@@ -4,9 +4,11 @@ from hosts import hosts
 from sys import version_info
 from bs4 import BeautifulSoup
 from requests import post, get
+from scrapers.utils import recognize_link, recognize_mirror
 
 host = "https://www.altadefinizione01.coffee/"
 excapes = ["Back", "back", ""]
+timeout = 4
 
 if version_info.major < 3:
 	input = raw_input
@@ -21,7 +23,7 @@ def search_film(film_to_search):
 	body = post(
 		host,
 		params = search_data,
-		timeout = 8
+		timeout = timeout
 	).text
 
 	parsing = BeautifulSoup(body, "html.parser")
@@ -60,14 +62,16 @@ def search_mirrors(film_to_see):
 	datas = json['results']
 
 	for a in mirrors.find_all("a"):
-		mirror = a.get_text().lower()[1:-1]
-		link_mirror = a.get("data-target")
-
-		if not link_mirror.startswith("http"):
-			link_mirror = "http:%s" % link_mirror
+		mirror = recognize_mirror(
+			a.get_text()[1:-1]
+		)
 
 		try:
 			hosts[mirror]
+
+			link_mirror = recognize_link(
+				a.get("data-target")
+			)
 
 			data = {
 				"mirror": mirror,

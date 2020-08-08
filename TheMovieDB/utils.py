@@ -1,6 +1,6 @@
 #!/usr/bin/python3
 
-api_image = "https://image.tmdb.org/t/p/w500%s"
+api_image = "https://image.tmdb.org/t/p/original%s"
 
 def get_image(path):
 	url = api_image % path

@@ -9,7 +9,41 @@ class Metadata:
 		self.logo = None
 		self.icon = None
 
+def decode_nored(url):
+	body = get(url).text
+	parse = BeautifulSoup(body, "html.parser")
+
+	script = str(
+		parse.find_all("script")[-1]
+	)
+
+	array = eval(
+		script
+		.split("=")[2]
+		.split(";")[0]
+	)
+
+	magic_number = int(
+		script
+		.split("- ")[1]
+		.split(")")[0]
+	)
+
+	iframe = ""
+
+	for a in array:
+		num = a - magic_number
+		char = chr(num)
+		iframe += char
+
+	parse = BeautifulSoup(iframe, "html.parser")
+	url = parse.find("iframe").get("src")
+	return url
+
 def get_emb(url):
+	if "nored" in url:
+		url = decode_nored(url)
+
 	if "fastredirect" in url:
 		body = get(url, headers = headers).text
 		parse = BeautifulSoup(body, "html.parser")
@@ -27,7 +61,6 @@ def get_emb(url):
 def get_video(url):
 	url = get_emb(url)
 	body = get(url, headers = headers).text
-
 	pieces = BeautifulSoup(body, "html.parser").find_all("script")
 	piece = get_piece(pieces)
 	splitted = [""]

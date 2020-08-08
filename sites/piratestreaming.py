@@ -1,21 +1,70 @@
 #!/usr/bin/python
-# -*- coding: utf-8 -*-
 
 from hosts import hosts
 from requests import get
 from sys import version_info
 from bs4 import BeautifulSoup
-from scrapers.utils import m_identify, recognize_mirror
+from scrapers.utils import recognize_mirror, m_identify
 
-host = "https://eurostreaming.cloud/"
+host = "https://www.piratestreaming.movie/"
 excapes = ["Back", "back", ""]
 timeout = 4
 
 if version_info.major < 3:
 	input = raw_input
-	special_char = "–".decode("utf-8")
-else:
-	special_char = "–"
+
+def search_film(film_to_search):
+	json = search_serie(film_to_search)
+	return json
+
+def search_mirrors(film_to_see):
+	body = get(film_to_see).text
+	parsing = BeautifulSoup(body, "html.parser")
+	iframes = parsing.find_all("iframe")
+	mirrors = parsing.find_all("h3")
+	avalaible_mirrors = []
+
+	for a in mirrors:
+		try:
+			mirror = recognize_mirror(
+				a
+				.get_text()
+				.split("su ")[1]
+			)
+		except IndexError:
+			index = mirrors.index(a)
+			del iframes[index]
+			continue
+
+		avalaible_mirrors.append(mirror)
+
+	json = {
+		"results": []
+	}
+
+	datas = json['results']
+
+	for a in range(
+		len(iframes)
+	):
+		mirror = avalaible_mirrors[a]
+
+		try:
+			hosts[mirror]
+			quality = "720p"
+			link_mirror = iframes[a].get("src")
+
+			data = {
+				"mirror": mirror,
+				"quality": quality,
+				"link": link_mirror
+			}
+
+			datas.append(data)
+		except KeyError:
+			pass
+
+	return json
 
 def search_serie(serie_to_search):
 	search_url = "{}?s={}".format(host, serie_to_search)
@@ -28,11 +77,10 @@ def search_serie(serie_to_search):
 
 	how = json['results']
 
-	for a in parsing.find_all("div", class_ = "post-thumb"):
+	for a in parsing.find_all("div", class_ = "container-index-post col-xs-4 col-sm-3 col-md-2-5 col-lg-2"):
 		image = a.find("img").get("src")
-		some = a.find("a")
-		link = some.get("href")
-		title = some.get("title").replace(" Serie Tv", "")
+		link = a.find("a").get("href")
+		title = a.find("h2").get_text()
 
 		data = {
 			"title": title,
@@ -44,44 +92,27 @@ def search_serie(serie_to_search):
 
 	return json
 
-def is_episodes_page(link):
-	body = get(link).text
-	parsing = BeautifulSoup(body, "html.parser")
-
-	if "CLICCA QUI" in str(parsing):
-		try:
-			link = (
-				parsing
-				.find("div", class_ = "entry-content")
-				.find_all("a")[-1]
-				.get("href")
-			)
-
-			if not host in link:
-				raise AttributeError("")
-
-		except (AttributeError, IndexError):
-			for a in parsing.find_all("script"):
-				c = str(a)
-
-				if "go_to" in c:
-					link = (
-						c
-						.split("\"go_to\":\"")[1]
-						.split("\"")[0]
-						.replace("\\", "")
-					)
-
-					break
-
-	return link
-
 def seasons(serie_to_see):
-	serie_to_see = is_episodes_page(serie_to_see)
 	body = get(serie_to_see).text
 	parsing = BeautifulSoup(body, "html.parser")
 	titles = parsing.find_all("div", class_ = "su-spoiler-title")
-	episodes = parsing.find_all("div", class_ = "su-spoiler-content su-clearfix")
+	episodes = parsing.find_all("div", class_ = "su-link-ep")
+
+	episodes_per_season = [
+		[] for a in titles
+	]
+
+	for a in episodes:
+		title = a.find("span").get_text()
+
+		season = (
+			title
+			.split("x")[0]
+			.replace(" ", "")
+		)
+
+		index = int(season) - 1
+		episodes_per_season[index].append(a)
 
 	json = {
 		"results": []
@@ -92,81 +123,46 @@ def seasons(serie_to_see):
 	for a in range(
 		len(titles)
 	):
-		title_season = titles[a].get_text()
+		title_season = titles[a].get_text()[1:]
 
 		datas.append(
 			{
-				"title": title_season,
+				"title": "{} {}".format(title_season, a + 1),
 				"episodes": []
 			}
 		)
 
-		list_episodes_season = episodes[a]
-		links = []
-
-		for b in list_episodes_season.find_all("a"):
-			mirror = recognize_mirror(
-				b.get_text()
-			)
-
-			link_mirror = b.get("href")
-
-			links.append(
-				("720p", mirror, link_mirror)
-			)
-
-		title_episodes_season = (
-			list_episodes_season
-			.get_text()
-			.split("\n")
-		)
-
-		del title_episodes_season[0]
-		del title_episodes_season[-1]
+		list_episodes_season = episodes_per_season[a]
 		how = datas[a]['episodes']
 
-		for episode in title_episodes_season:
-			episode_string_splited = episode.split(special_char)
-			episode = episode_string_splited[0]
-			del episode_string_splited[0]
+		for b in list_episodes_season:
+			episode = b.find("span").get_text()
 
 			infos = {
 				"episode": episode,
 				"mirrors": []
 			}
 
-			how1 = infos['mirrors']
-			length_avalaible_mirrors = len(episode_string_splited)
+			for c in b.find_all("a"):
+				mirror = recognize_mirror(
+					c.get_text()[1:-1]
+				)
 
-			for c in range(length_avalaible_mirrors):
+				how1 = infos['mirrors']
+
 				try:
-					mirror = links[0][1]
-
-					c_mirror = recognize_mirror(
-						episode_string_splited[c]
-						.replace(" ", "")
-					)
-
-					if c_mirror != mirror:
-						continue
-
 					hosts[mirror]
+					link_mirror = c.get("newlink")
 
 					data = {
 						"mirror": mirror,
-						"quality": links[0][0],
-						"link": links[0][2]
+						"quality": "720p",
+						"link": link_mirror
 					}
 
 					how1.append(data)
-
 				except KeyError:
 					pass
-
-				except IndexError:
-					break
-
-				del links[0]
 
 			how.append(infos)
 
@@ -178,7 +174,58 @@ def identify(info):
 	link = m_identify(link)
 	return hosts[mirror].get_video(link)
 
-def menu():
+def f_menu():
+	while True:
+		try:
+			ans = input("Type the film title which you would search: ")
+			result = search_film(ans)['results']
+
+			while True:
+				for a in range(
+					len(result)
+				):
+					print(
+						"%d): %s" % 
+						(
+							a + 1,
+							result[a]['title']
+						)
+					)
+
+				ans = input("What film do you want to see?: ")
+
+				if ans in excapes:
+					break
+					
+				index = int(ans) - 1
+				film_to_see = result[index]['link']
+				datas = search_mirrors(film_to_see)['results']
+
+				while True:
+					for a in range(
+						len(datas)
+					):
+						print(
+							"%s): %s (%s)"
+							% (
+								a + 1,
+								datas[a]['mirror'],
+								datas[a]['quality']
+							)
+						)
+
+					ans = input("What film do you want to see?: ")
+
+					if ans in excapes:
+						break
+
+					index = int(ans) - 1
+					video = identify(datas[index])
+					print(video)
+		except KeyboardInterrupt:
+			break
+
+def s_menu():
 	while True:
 		try:
 			ans = input("Type the serie title which you would search: ")
@@ -200,7 +247,7 @@ def menu():
 
 				if ans in excapes:
 					break
-					
+
 				index = int(ans) - 1
 				serie_to_see = result[index]['link']
 				seasonss = seasons(serie_to_see)['results']
@@ -268,6 +315,17 @@ def menu():
 							print(video)
 		except KeyboardInterrupt:
 			break
+
+def menu():
+	print("1): Film")
+	print("2): Serie Tv")
+	ans = input("Choose: ")
+
+	if ans == "1":
+		f_menu()
+	
+	elif ans == "2":
+		s_menu()
 
 if __name__ == "__main__":
 	menu()

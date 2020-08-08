@@ -7,18 +7,19 @@ from bs4 import BeautifulSoup
 
 from scrapers.utils import (
 	recognize_mirror, m_identify,
-	decode_middle_encrypted
+	decode_middle_encrypted, recognize_link
 )
 
 host = "https://altadefinizione.la/"
 excapes = ["Back", "back", ""]
+timeout = 4
 
 if version_info.major < 3:
 	input = raw_input
 
 def search_film(film_to_search):
 	search_url = "{}?search={}".format(host, film_to_search)
-	body = get(search_url, timeout = 8).text
+	body = get(search_url, timeout = timeout).text
 	parsing = BeautifulSoup(body, "html.parser")
 
 	json = {
@@ -83,30 +84,27 @@ def search_mirrors(film_to_see):
 
 		for b in mirrors:
 			c = b.find("a")
-			link = host + c.get("href")
 
 			mirror = recognize_mirror(
-				c.get_text().lower()
-			)
-
-			body = get(link).text
-			parse = BeautifulSoup(body, "html.parser")
-
-			link_enc = (
-				parse
-				.find("iframe")
-				.get("custom-src")
-			)
-
-			if not link_enc:
-				continue
-
-			link_mirror = m_identify(
-				decode_middle_encrypted(link_enc)
+				c.get_text()
 			)
 
 			try:
 				hosts[mirror]
+				link = host + c.get("href")
+				body = get(link).text
+				parse = BeautifulSoup(body, "html.parser")
+
+				link_enc = (
+					parse
+					.find("iframe")
+					.get("custom-src")
+				)
+
+				if not link_enc:
+					continue
+
+				link_mirror = decode_middle_encrypted(link_enc)
 
 				data = {
 					"mirror": mirror,
@@ -123,6 +121,7 @@ def search_mirrors(film_to_see):
 def identify(info):
 	link = info['link']
 	mirror = info['mirror']
+	link = m_identify(link)
 	return hosts[mirror].get_video(link)
 
 def menu():

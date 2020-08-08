@@ -4,10 +4,11 @@ from hosts import hosts
 from sys import version_info
 from bs4 import BeautifulSoup
 from requests import post, get
-from scrapers.utils import recognize_mirror
+from scrapers.utils import recognize_mirror, recognize_link
 
 host = "https://altadefinizione.care"
 excapes = ["Back", "back", ""]
+timeout = 4
 
 if version_info.major < 3:
 	input = raw_input
@@ -23,7 +24,7 @@ def search_film(film_to_search):
 	body = post(
 		host,
 		params = search_data,
-		timeout = 8
+		timeout = timeout
 	).text
 
 	parsing = BeautifulSoup(body, "html.parser").find_all("div", class_ = "col-lg-3 col-md-3 col-xs-4")
@@ -62,16 +63,15 @@ def search_mirrors(film_to_see):
 
 	for a in mirrors.find_all("a"):
 		mirror = recognize_mirror(
-			a.get_text().lower()
+			a.get_text()
 		)
-
-		link_mirror = a.get("data-target")
-
-		if not link_mirror.startswith("http"):
-			link_mirror = "http:%s" % link_mirror
 
 		try:
 			hosts[mirror]
+
+			link_mirror = recognize_link(
+				a.get("data-target")
+			)
 
 			data = {
 				"mirror": mirror,

@@ -381,6 +381,6 @@ class MovieDB:
 #from pprint import pprint
 #start = MovieDB("8804be4f30f706e9e0ec40c32d961635")
 #pprint(start.get_tvshow_discover("it", 2019))
-#pprint(start.get_season("48866", "7"))
+#pprint(start.get_tvshow("48866", "it"))
 #film_id = start.get_person_movie_credits("118340")
 #pprint(film_id)

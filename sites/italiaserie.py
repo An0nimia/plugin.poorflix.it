@@ -1,21 +1,17 @@
 #!/usr/bin/python
-# -*- coding: utf-8 -*-
 
 from hosts import hosts
 from requests import get
 from sys import version_info
 from bs4 import BeautifulSoup
-from scrapers.utils import m_identify, recognize_mirror
+from scrapers.utils import recognize_mirror, m_identify
 
-host = "https://eurostreaming.cloud/"
+host = "https://italiaserie.org/"
 excapes = ["Back", "back", ""]
 timeout = 4
 
 if version_info.major < 3:
 	input = raw_input
-	special_char = "–".decode("utf-8")
-else:
-	special_char = "–"
 
 def search_serie(serie_to_search):
 	search_url = "{}?s={}".format(host, serie_to_search)
@@ -44,44 +40,11 @@ def search_serie(serie_to_search):
 
 	return json
 
-def is_episodes_page(link):
-	body = get(link).text
-	parsing = BeautifulSoup(body, "html.parser")
-
-	if "CLICCA QUI" in str(parsing):
-		try:
-			link = (
-				parsing
-				.find("div", class_ = "entry-content")
-				.find_all("a")[-1]
-				.get("href")
-			)
-
-			if not host in link:
-				raise AttributeError("")
-
-		except (AttributeError, IndexError):
-			for a in parsing.find_all("script"):
-				c = str(a)
-
-				if "go_to" in c:
-					link = (
-						c
-						.split("\"go_to\":\"")[1]
-						.split("\"")[0]
-						.replace("\\", "")
-					)
-
-					break
-
-	return link
-
 def seasons(serie_to_see):
-	serie_to_see = is_episodes_page(serie_to_see)
 	body = get(serie_to_see).text
 	parsing = BeautifulSoup(body, "html.parser")
 	titles = parsing.find_all("div", class_ = "su-spoiler-title")
-	episodes = parsing.find_all("div", class_ = "su-spoiler-content su-clearfix")
+	episodes = parsing.find_all("div", class_ = "su-spoiler-content")
 
 	json = {
 		"results": []
@@ -92,7 +55,7 @@ def seasons(serie_to_see):
 	for a in range(
 		len(titles)
 	):
-		title_season = titles[a].get_text()
+		title_season = titles[a].get_text()[2:]
 
 		datas.append(
 			{
@@ -102,72 +65,42 @@ def seasons(serie_to_see):
 		)
 
 		list_episodes_season = episodes[a]
-		links = []
-
-		for b in list_episodes_season.find_all("a"):
-			mirror = recognize_mirror(
-				b.get_text()
-			)
-
-			link_mirror = b.get("href")
-
-			links.append(
-				("720p", mirror, link_mirror)
-			)
-
-		title_episodes_season = (
-			list_episodes_season
-			.get_text()
-			.split("\n")
-		)
-
-		del title_episodes_season[0]
-		del title_episodes_season[-1]
+		times = False
 		how = datas[a]['episodes']
 
-		for episode in title_episodes_season:
-			episode_string_splited = episode.split(special_char)
-			episode = episode_string_splited[0]
-			del episode_string_splited[0]
+		for b in list_episodes_season.find_all("div", class_ = "su-link-ep"):
+			for c in b.find_all("a"):
+				if not times:
+					episode = c.get_text()[2:-2]
+					mirror = "speedvideo"
+					times = True
 
-			infos = {
-				"episode": episode,
-				"mirrors": []
-			}
+					infos = {
+						"episode": episode,
+						"mirrors": []
+					}
 
-			how1 = infos['mirrors']
-			length_avalaible_mirrors = len(episode_string_splited)
-
-			for c in range(length_avalaible_mirrors):
-				try:
-					mirror = links[0][1]
-
-					c_mirror = recognize_mirror(
-						episode_string_splited[c]
-						.replace(" ", "")
+					how1 = infos['mirrors']
+				else:
+					mirror = recognize_mirror(
+						c.get_text()
 					)
 
-					if c_mirror != mirror:
-						continue
-
+				try:
 					hosts[mirror]
+					link_mirror = c.get("href").replace("\r\n", "")
 
 					data = {
 						"mirror": mirror,
-						"quality": links[0][0],
-						"link": links[0][2]
+						"quality": "720p",
+						"link": link_mirror
 					}
 
 					how1.append(data)
-
 				except KeyError:
 					pass
 
-				except IndexError:
-					break
-
-				del links[0]
-
+			times = False
 			how.append(infos)
 
 	return json
