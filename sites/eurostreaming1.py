@@ -5,7 +5,11 @@ from hosts import hosts
 from requests import get
 from sys import version_info
 from bs4 import BeautifulSoup
-from scrapers.utils import m_identify, recognize_mirror
+from exceptions.exceptions import VideoNotAvalaible
+
+from scrapers.utils import (
+	recognize_link, recognize_mirror, m_identify
+)
 
 host = "https://eurostreaming.cloud/"
 excapes = ["Back", "back", ""]
@@ -109,7 +113,9 @@ def seasons(serie_to_see):
 				b.get_text()
 			)
 
-			link_mirror = b.get("href")
+			link_mirror = recognize_link(
+				b.get("href")
+			)
 
 			links.append(
 				("720p", mirror, link_mirror)
@@ -264,7 +270,13 @@ def menu():
 								break
 
 							index = int(ans) - 1
-							video = identify(mirrors[index])
+
+							try:
+								video = identify(mirrors[index])
+							except VideoNotAvalaible as a:
+								print(a)
+								continue
+
 							print(video)
 		except KeyboardInterrupt:
 			break

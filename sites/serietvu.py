@@ -4,23 +4,29 @@ from hosts import hosts
 from requests import get
 from sys import version_info
 from bs4 import BeautifulSoup
+from exceptions.exceptions import VideoNotAvalaible
+
+from scrapers.utils import (
+	recognize_link, recognize_mirror, m_identify
+)
 
 host = "https://www.serietvu.link/"
 excapes = ["Back", "back", ""]
+timeout = 4
 
 if version_info.major < 3:
 	input = raw_input
 
 def search_serie(serie_to_search):
 	search_url = "{}?s={}".format(host, serie_to_search)
-	body = get(search_url).text
+	body = get(search_url, timeout = timeout).text
 	parsing = BeautifulSoup(body, "html.parser")
 
 	json = {
-		"result": []
+		"results": []
 	}
 
-	how = json['result']
+	how = json['results']
 
 	for a in parsing.find_all("div", class_ = "item"):
 		some = a.find("a")
@@ -66,20 +72,40 @@ def seasons(serie_to_see):
 		how = datas[a]['episodes']
 		
 		for b in list_episodes_season:
-			link_mirror = b.find("a").get("data-href")
-
-			data = {
-				"mirror": "speedvideo",
-				"quality": "720p",
-				"link": link_mirror
-			}
-
 			episode = b.find("div", class_ = "title").get_text()
 
 			infos = {
 				"episode": episode,
-				"mirrors": [data]
+				"mirrors": []
 			}
+
+			how1 = infos['mirrors']
+
+			for c in b.find_all("li"):
+				d = c.find("a")
+
+				mirror = recognize_mirror(
+					d.get_text()
+				)
+
+				try:
+					hosts[mirror]
+
+					link_mirror = recognize_link(
+						d
+						.get("href")
+						.replace("\n", "")
+					)
+
+					data = {
+						"mirror": mirror,
+						"quality": "720p",
+						"link": link_mirror
+					}
+
+					how1.append(data)
+				except KeyError:
+					pass
 
 			how.append(infos)
 
@@ -88,7 +114,8 @@ def seasons(serie_to_see):
 def identify(info):
 	link = info['link']
 	mirror = info['mirror']
-	return hosts[mirror](link)
+	link = m_identify(link)
+	return hosts[mirror].get_video(link)
 
 def menu():
 	while True:
@@ -112,10 +139,10 @@ def menu():
 
 				if ans in excapes:
 					break
-					
+
 				index = int(ans) - 1
 				serie_to_see = result[index]['link']
-				seasonss = seasons(serie_to_see)['results']
+				seasonss = seasons(serie_to_see)
 
 				while True:
 					for a in range(
@@ -176,7 +203,13 @@ def menu():
 								break
 
 							index = int(ans) - 1
-							video = identify(mirrors[index])
+
+							try:
+								video = identify(mirrors[index])
+							except VideoNotAvalaible as a:
+								print(a)
+								continue
+
 							print(video)
 		except KeyboardInterrupt:
 			break

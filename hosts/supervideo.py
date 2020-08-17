@@ -3,6 +3,7 @@
 from requests import get
 from bs4 import BeautifulSoup
 from scrapers.utils import get_piece
+from exceptions.exceptions import VideoNotAvalaible
 
 class Metadata:
 	def __init__(self):
@@ -165,11 +166,14 @@ def get_video(url):
 					video_url += "."
 					b = b[1:]
 
-				index = int(b, 36)
-				video_url += splitted[index]
+				try:
+					index = int(b, 36)
+					video_url += splitted[index]
 
-				if b != things[-1][1:]:
-					video_url += ","
+					if b != things[-1][1:]:
+						video_url += ","
+				except ValueError:
+					raise VideoNotAvalaible(url)
 
 		elif a == 3:
 			things = s_indexs[a].split(".")

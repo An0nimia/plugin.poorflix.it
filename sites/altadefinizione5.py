@@ -4,10 +4,16 @@ from hosts import hosts
 from requests import get
 from sys import version_info
 from bs4 import BeautifulSoup
-from scrapers.utils import m_identify, headers
+from exceptions.exceptions import VideoNotAvalaible
+
+from scrapers.utils import (
+	recognize_link, recognize_mirror,
+	m_identify, headers
+)
 
 host = "https://altadefinizione.sh/"
 excapes = ["Back", "back", ""]
+timeout = 4
 
 if version_info.major < 3:
 	input = raw_input
@@ -18,7 +24,7 @@ def search_film(film_to_search):
 	body = get(
 		search_url,
 		headers = headers,
-		timeout = 8
+		timeout = timeout
 	).text
 
 	parsing = BeautifulSoup(body, "html.parser")
@@ -57,25 +63,19 @@ def search_mirrors(film_to_see):
 	for a in parsing.find_all("tr", id = "movkbGKmW492336"):
 		tds = a.find_all("td")
 
-		mirror = (
-			tds[1]
-			.get_text()[1:]
-			.lower()
-		)
-
-		quality = tds[2].get_text()
-
-		link_mirror = (
-			a
-			.find("a")
-			.get("href")
+		mirror = recognize_mirror(
+			tds[1].get_text()[1:]
 		)
 
 		try:
 			hosts[mirror]
+			quality = tds[2].get_text()
 
-			if not link_mirror.startswith("http"):
-				link_mirror = "http:%s" % link_mirror 
+			link_mirror = recognize_link(
+				a
+				.find("a")
+				.get("href")
+			)
 
 			data = {
 				"mirror": mirror,
@@ -117,7 +117,7 @@ def menu():
 
 				if ans in excapes:
 					break
-					
+
 				index = int(ans) - 1
 				film_to_see = result[index]['link']
 				datas = search_mirrors(film_to_see)['results']
@@ -141,7 +141,13 @@ def menu():
 						break
 
 					index = int(ans) - 1
-					video = identify(datas[index])
+
+					try:
+						video = identify(datas[index])
+					except VideoNotAvalaible as a:
+						print(a)
+						continue
+
 					print(video)
 		except KeyboardInterrupt:
 			break

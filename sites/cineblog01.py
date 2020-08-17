@@ -4,10 +4,16 @@ from hosts import hosts
 from sys import version_info
 from bs4 import BeautifulSoup
 from requests import post, get
-from scrapers.utils import decode_middle_encrypted
+from exceptions.exceptions import VideoNotAvalaible
+
+from scrapers.utils import (
+	recognize_link, recognize_mirror,
+	m_identify, decode_middle_encrypted
+)
 
 host = "https://cineblog01.love/"
 excapes = ["Back", "back", ""]
+timeout = 4
 
 if version_info.major < 3:
 	input = raw_input
@@ -22,7 +28,7 @@ def search_film(film_to_search):
 	body = post(
 		host,
 		params = search_data,
-		timeout = 8
+		timeout = timeout
 	).text
 
 	parsing = BeautifulSoup(body, "html.parser")
@@ -62,13 +68,14 @@ def search_mirrors(film_to_see):
 	datas = json['results']
 
 	for a in array:
-		link_mirror = decode_middle_encrypted(
+		link_enc = (
 			a
 			.get("href")
 			.split("link=")[1]
 			.split("&")[0]
 		)
 
+		link_mirror = decode_middle_encrypted(link_enc)
 		mirror = a.get_text().lower()
 		quality = "720p"
 
@@ -90,6 +97,7 @@ def search_mirrors(film_to_see):
 def identify(info):
 	link = info['link']
 	mirror = info['mirror']
+	link = m_identify(link)
 	return hosts[mirror].get_video(link)
 
 def menu():
@@ -114,7 +122,7 @@ def menu():
 
 				if ans in excapes:
 					break
-					
+
 				index = int(ans) - 1
 				film_to_see = result[index]['link']
 				datas = search_mirrors(film_to_see)['results']
@@ -138,7 +146,13 @@ def menu():
 						break
 
 					index = int(ans) - 1
-					video = identify(datas[index])
+
+					try:
+						video = identify(datas[index])
+					except VideoNotAvalaible as a:
+						print(a)
+						continue
+
 					print(video)
 		except KeyboardInterrupt:
 			break

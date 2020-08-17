@@ -4,10 +4,11 @@ from hosts import hosts
 from requests import get
 from sys import version_info
 from bs4 import BeautifulSoup
+from exceptions.exceptions import VideoNotAvalaible
 
 from scrapers.utils import (
-	recognize_mirror, m_identify,
-	decode_middle_encrypted, recognize_link
+	recognize_link, recognize_mirror,
+	m_identify, decode_middle_encrypted
 )
 
 host = "https://altadefinizione.la/"
@@ -104,7 +105,9 @@ def search_mirrors(film_to_see):
 				if not link_enc:
 					continue
 
-				link_mirror = decode_middle_encrypted(link_enc)
+				link_mirror = recognize_link(
+					decode_middle_encrypted(link_enc)
+				)
 
 				data = {
 					"mirror": mirror,
@@ -146,7 +149,7 @@ def menu():
 
 				if ans in excapes:
 					break
-					
+
 				index = int(ans) - 1
 				film_to_see = result[index]['link']
 				datas = search_mirrors(film_to_see)['results']
@@ -170,7 +173,13 @@ def menu():
 						break
 
 					index = int(ans) - 1
-					video = identify(datas[index])
+
+					try:
+						video = identify(datas[index])
+					except VideoNotAvalaible as a:
+						print(a)
+						continue
+
 					print(video)
 		except KeyboardInterrupt:
 			break

@@ -5,10 +5,12 @@ from bs4 import BeautifulSoup
 from requests import post, get
 
 headers = {
-	"User-Agent": "Mozilla/5.0 (Windows NT 10.0; WOW64; rv:59.0) Gecko/20100101 Firefox/59.0"
+	"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:79.0) Gecko/20100101 Firefox/79.0"
 }
 
 def recognize_mirror(mirror):
+	mirror = mirror.lower()
+
 	if mirror == "akvid":
 		mirror = "akvideo"
 
@@ -21,7 +23,7 @@ def recognize_mirror(mirror):
 	elif mirror == "ciao":
 		mirror = "vidmoly"
 
-	return mirror.lower()
+	return mirror
 
 def recognize_link(link_mirror):
 	if not link_mirror.startswith("http"):

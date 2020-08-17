@@ -55,4 +55,7 @@ def get_video(url):
 
 		video_url += "/"
 
+	if video_url.endswith("/small3.mp4/"):
+		raise VideoNotAvalaible(url)
+
 	return video_url[:-1]

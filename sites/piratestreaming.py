@@ -4,7 +4,11 @@ from hosts import hosts
 from requests import get
 from sys import version_info
 from bs4 import BeautifulSoup
-from scrapers.utils import recognize_mirror, m_identify
+from exceptions.exceptions import VideoNotAvalaible
+
+from scrapers.utils import (
+	recognize_link, recognize_mirror, m_identify
+)
 
 host = "https://www.piratestreaming.movie/"
 excapes = ["Back", "back", ""]
@@ -152,7 +156,10 @@ def seasons(serie_to_see):
 
 				try:
 					hosts[mirror]
-					link_mirror = c.get("newlink")
+
+					link_mirror = recognize_link(
+						c.get("newlink")
+					)
 
 					data = {
 						"mirror": mirror,
@@ -196,7 +203,7 @@ def f_menu():
 
 				if ans in excapes:
 					break
-					
+
 				index = int(ans) - 1
 				film_to_see = result[index]['link']
 				datas = search_mirrors(film_to_see)['results']
@@ -220,7 +227,13 @@ def f_menu():
 						break
 
 					index = int(ans) - 1
-					video = identify(datas[index])
+
+					try:
+						video = identify(datas[index])
+					except VideoNotAvalaible as a:
+						print(a)
+						continue
+
 					print(video)
 		except KeyboardInterrupt:
 			break
@@ -311,7 +324,13 @@ def s_menu():
 								break
 
 							index = int(ans) - 1
-							video = identify(mirrors[index])
+
+							try:
+								video = identify(mirrors[index])
+							except VideoNotAvalaible as a:
+								print(a)
+								continue
+
 							print(video)
 		except KeyboardInterrupt:
 			break

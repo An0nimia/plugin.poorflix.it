@@ -3,6 +3,7 @@
 from requests import get
 from bs4 import BeautifulSoup
 from scrapers.utils import get_piece
+from exceptions.exceptions import VideoNotAvalaible
 
 class Metadata:
 	def __init__(self):
@@ -24,7 +25,12 @@ def get_video(url):
 	url = get_emb(url)
 	body = get(url).text
 	pieces = BeautifulSoup(body, "html.parser").find_all("script")
-	piece = get_piece(pieces, 1)
+
+	try:
+		piece = get_piece(pieces, 1)
+	except UnboundLocalError:
+		raise VideoNotAvalaible(url)
+
 	splitted = ["", "", ""]
 	splitted += piece.split("|")[3:]
 

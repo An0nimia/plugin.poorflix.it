@@ -4,7 +4,11 @@ from hosts import hosts
 from requests import get
 from sys import version_info
 from bs4 import BeautifulSoup
-from scrapers.utils import recognize_mirror, m_identify
+from exceptions.exceptions import VideoNotAvalaible
+
+from scrapers.utils import (
+	recognize_link, recognize_mirror, m_identify
+)
 
 host = "https://italiaserie.org/"
 excapes = ["Back", "back", ""]
@@ -88,7 +92,12 @@ def seasons(serie_to_see):
 
 				try:
 					hosts[mirror]
-					link_mirror = c.get("href").replace("\r\n", "")
+
+					link_mirror = recognize_link(
+						c
+						.get("href")
+						.replace("\r\n", "")
+					)
 
 					data = {
 						"mirror": mirror,
@@ -197,7 +206,19 @@ def menu():
 								break
 
 							index = int(ans) - 1
-							video = identify(mirrors[index])
+
+							try:
+								video = identify(mirrors[index])
+							except VideoNotAvalaible as a:
+								print(a)
+								continue
+
+							try:
+								video = identify(mirrors[index])
+							except VideoNotAvalaible as a:
+								print(a)
+								continue
+
 							print(video)
 		except KeyboardInterrupt:
 			break

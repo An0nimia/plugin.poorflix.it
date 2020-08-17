@@ -4,6 +4,7 @@ from time import sleep
 from bs4 import BeautifulSoup
 from requests import post, get
 from scrapers.utils import get_piece
+from exceptions.exceptions import VideoNotAvalaible
 
 class Metadata:
 	def __init__(self):
@@ -13,7 +14,12 @@ class Metadata:
 def get_video(url):
 	body = get(url)
 	parsing = BeautifulSoup(body.text, "html.parser").find_all("input")
-	op = parsing[3].get("value")
+
+	try:
+		op = parsing[3].get("value")
+	except IndexError:
+		raise VideoNotAvalaible(url)
+
 	code = parsing[4].get("value")
 	hashs = parsing[5].get("value")
 

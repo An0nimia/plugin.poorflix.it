@@ -1,5 +1,5 @@
 #!/usr/bin/python
-#code a lot inspired from mystream of Plugin for URLResolver, thanks a lot to the devs =)
+#code a lot inspired from mystream of Plugin for URLResolver, thanks a lot to the devs =) https://github.com/tvaddonsco/script.module.urlresolver/blob/master/lib/urlresolver/plugins/mystream.py
 
 from requests import get
 from re import search, DOTALL
