@@ -54,7 +54,12 @@ def seasons(serie_to_see):
 	parsing = BeautifulSoup(body, "html.parser")
 	titles = parsing.find_all("option")
 	episodes = parsing.find_all("div", class_ = "list")
-	datas = []
+
+	json = {
+		"results": []
+	}
+
+	datas = json['results']
 
 	for a in range(
 		len(titles)
@@ -109,7 +114,7 @@ def seasons(serie_to_see):
 
 			how.append(infos)
 
-	return datas
+	return json
 
 def identify(info):
 	link = info['link']
@@ -142,7 +147,7 @@ def menu():
 
 				index = int(ans) - 1
 				serie_to_see = result[index]['link']
-				seasonss = seasons(serie_to_see)
+				seasonss = seasons(serie_to_see)['results']
 
 				while True:
 					for a in range(
