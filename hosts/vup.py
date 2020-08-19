@@ -3,7 +3,7 @@
 from requests import get
 from bs4 import BeautifulSoup
 from scrapers.utils import get_piece
-from exceptions.exceptions import VideoNotAvalaible
+from hosts.exceptions.exceptions import VideoNotAvalaible
 
 class Metadata:
 	def __init__(self):

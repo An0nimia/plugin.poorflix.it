@@ -4,7 +4,7 @@ from time import sleep
 from bs4 import BeautifulSoup
 from requests import post, get
 from scrapers.utils import get_piece
-from exceptions.exceptions import VideoNotAvalaible
+from hosts.exceptions.exceptions import VideoNotAvalaible
 
 class Metadata:
 	def __init__(self):

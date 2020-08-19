@@ -1,7 +1,7 @@
 #!/usr/bin/python
 
 from requests import get
-from exceptions.exceptions import VideoNotAvalaible
+from hosts.exceptions.exceptions import VideoNotAvalaible
 
 class Metadata:
 	def __init__(self):

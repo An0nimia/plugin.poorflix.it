@@ -3,7 +3,7 @@
 from requests import get
 from bs4 import BeautifulSoup
 from scrapers.utils import get_piece
-from exceptions.exceptions import VideoNotAvalaible
+from hosts.exceptions.exceptions import VideoNotAvalaible
 
 class Metadata:
 	def __init__(self):
@@ -66,7 +66,7 @@ def get_cookie(url):
 			.split("'")[0]
 		)
 	except IndexError:
-		return None
+		return
 
 	L = len(S)  - 27
 	U = 0
@@ -127,7 +127,12 @@ def get_video(url):
 
 	body = get(url, headers = headers).text
 	pieces = BeautifulSoup(body, "html.parser").find_all("script")
-	piece = get_piece(pieces)
+
+	try:
+		piece = get_piece(pieces)
+	except UnboundLocalError:
+		raise VideoNotAvalaible(url)
+
 	splitted = [""]
 	splitted += piece.split("|")[1:]
 

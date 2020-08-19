@@ -2,7 +2,7 @@
 
 from requests import get
 from bs4 import BeautifulSoup
-from exceptions.exceptions import VideoNotAvalaible
+from hosts.exceptions.exceptions import VideoNotAvalaible
 
 class Metadata:
 	def __init__(self):

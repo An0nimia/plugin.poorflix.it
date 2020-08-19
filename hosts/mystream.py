@@ -3,7 +3,7 @@
 
 from requests import get
 from re import search, DOTALL
-from exceptions.exceptions import VideoNotAvalaible
+from hosts.exceptions.exceptions import VideoNotAvalaible
 
 class Metadata:
 	def __init__(self):

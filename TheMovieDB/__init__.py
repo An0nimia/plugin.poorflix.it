@@ -1,6 +1,6 @@
 #!/usr/bin/python3
 
-from requests import get
+from TheMovieDB.utils import request
 
 api_infos = "https://api.themoviedb.org/3%s"
 
@@ -27,7 +27,7 @@ class MovieDB:
 
 		path = "/search/movie%s" % params
 		url = api_infos % path
-		result = get(url).json()
+		result = request(url)
 		return result
 
 	def search_tvshow(
@@ -49,7 +49,7 @@ class MovieDB:
 
 		path = "/search/tv%s" % params
 		url = api_infos % path
-		result = get(url).json()
+		result = request(url)
 		return result
 
 	def search_person(
@@ -71,7 +71,7 @@ class MovieDB:
 
 		path = "/search/person%s" % params
 		url = api_infos % path
-		result = get(url).json()
+		result = request(url)
 		return result
 
 	def get_movie(self, movie_id, language = "en-US"):
@@ -86,7 +86,7 @@ class MovieDB:
 
 		path = "/movie/%s" % params
 		url = api_infos % path
-		result = get(url).json()
+		result = request(url)
 		return result
 
 	def get_movie_popular(self, language = "en-US"):
@@ -100,7 +100,7 @@ class MovieDB:
 
 		path = "/movie/popular%s" % params
 		url = api_infos % path
-		result = get(url).json()
+		result = request(url)
 		return result
 
 	def get_movie_top_rated(self, language = "en-US"):
@@ -114,7 +114,7 @@ class MovieDB:
 
 		path = "/movie/top_rated%s" % params
 		url = api_infos % path
-		result = get(url).json()
+		result = request(url)
 		return result
 
 	def get_movie_discover(
@@ -150,7 +150,7 @@ class MovieDB:
 
 		path = "/discover/movie%s" % params
 		url = api_infos % path
-		result = get(url).json()
+		result = request(url)
 		return result
 
 	def get_tvshow(self, tvshow_id, language = "en-US"):
@@ -165,7 +165,7 @@ class MovieDB:
 
 		path = "/tv/%s" % params
 		url = api_infos % path
-		result = get(url).json()
+		result = request(url)
 		return result
 
 	def get_tvshow_popular(self, language = "en-US"):
@@ -179,7 +179,7 @@ class MovieDB:
 
 		path = "/tv/popular%s" % params
 		url = api_infos % path
-		result = get(url).json()
+		result = request(url)
 		return result
 
 	def get_tvshow_top_rated(self, language = "en-US"):
@@ -193,7 +193,7 @@ class MovieDB:
 
 		path = "/tv/top_rated%s" % params
 		url = api_infos % path
-		result = get(url).json()
+		result = request(url)
 		return result
 
 	def get_tvshow_discover(
@@ -229,7 +229,7 @@ class MovieDB:
 
 		path = "/discover/tv%s" % params
 		url = api_infos % path
-		result = get(url).json()
+		result = request(url)
 		return result
 
 	def get_season(
@@ -247,21 +247,21 @@ class MovieDB:
 
 		path = "/tv/{}/season/{}".format(tvshow_id, params)
 		url = api_infos % path
-		result = get(url).json()
+		result = request(url)
 		return result
 
 	def get_cast_movie(self, movie_id):
 		params = "credits?api_key=%s" % self.api_key
 		path = "/movie/{}/{}".format(movie_id, params)
 		url = api_infos % path
-		result = get(url).json()
+		result = request(url)
 		return result
 
 	def get_cast_tvshow(self, tvshow_id):
 		params = "credits?api_key=%s" % self.api_key
 		path = "/tv/{}/{}".format(tvshow_id, params)
 		url = api_infos % path
-		result = get(url).json()
+		result = request(url)
 		return result
 
 	def get_cast_season(
@@ -278,7 +278,7 @@ class MovieDB:
 
 		path = "/tv/{}/season/{}/{}".format(tvshow_id, season, params)
 		url = api_infos % path
-		result = get(url).json()
+		result = request(url)
 		return result
 
 	def get_cast_episode(
@@ -301,7 +301,7 @@ class MovieDB:
 		)
 
 		url = api_infos % path
-		result = get(url).json()
+		result = request(url)
 		return result
 
 	def get_person_movie_credits(self, person_id, language = "en-US"):
@@ -315,7 +315,7 @@ class MovieDB:
 
 		path = "/person/{}/{}".format(person_id, params)
 		url = api_infos % path
-		result = get(url).json()
+		result = request(url)
 		return result
 
 	def get_person_tvshow_credits(self, person_id, language = "en-US"):
@@ -329,14 +329,14 @@ class MovieDB:
 
 		path = "/person/{}/{}".format(person_id, params)
 		url = api_infos % path
-		result = get(url).json()
+		result = request(url)
 		return result
 
 	def get_languages(self):
 		params = "?api_key=%s" % self.api_key
 		path = "/configuration/languages%s" % params
 		url = api_infos % path
-		result = get(url).json()
+		result = request(url)
 		return result
 
 	def get_iso_language(self, language):
@@ -361,7 +361,7 @@ class MovieDB:
 
 		path = "/genre/movie/list%s" % params
 		url = api_infos % path
-		result = get(url).json()
+		result = request(url)
 		return result
 
 	def get_genre_tvshow(self, language = "en-US"):
@@ -375,12 +375,5 @@ class MovieDB:
 
 		path = "/genre/tv/list%s" % params
 		url = api_infos % path
-		result = get(url).json()
+		result = request(url)
 		return result
-
-#from pprint import pprint
-#start = MovieDB("8804be4f30f706e9e0ec40c32d961635")
-#pprint(start.get_tvshow_discover("it", 2019))
-#pprint(start.get_tvshow("48866", "it"))
-#film_id = start.get_person_movie_credits("118340")
-#pprint(film_id)

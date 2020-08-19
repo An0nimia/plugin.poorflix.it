@@ -10,6 +10,7 @@ import get_media_metadata
 from urllib import urlencode
 from urlparse import parse_qsl
 from sys import argv, version_info
+from TheMovieDB.exceptions import error34
 from TheMovieDB import MovieDB, utils as moviedbutils
 
 _url = argv[0]
@@ -135,7 +136,7 @@ def search_movie(mode = 0, topic = None, genre = None, year = None):
 	if mode == 1:
 		results = moviedb.get_movie_popular("it")
 		message = messages['movie']['popular']
-	
+
 	elif mode == 2:
 		results = moviedb.get_movie_top_rated("it")
 		message = messages['movie']['top_rated']
@@ -176,7 +177,12 @@ def search_movie(mode = 0, topic = None, genre = None, year = None):
 		title = result['title']
 		movie_id = result['id']
 		list_item = xbmcgui.ListItem(label = title)
-		metadata_art, metadata_movie, metadata_cast = get_media_metadata.get_infos_movie(movie_id)
+
+		try:
+			metadata_art, metadata_movie, metadata_cast = get_media_metadata.get_infos_movie(movie_id)
+		except error34:
+			continue
+
 		list_item.setArt(metadata_art)
 		list_item.setCast(metadata_cast)
 		list_item.setInfo("video", metadata_movie)
@@ -218,11 +224,11 @@ def search_tvshow(mode = 0, topic = None, genre = None, year = None):
 	elif mode == 4:
 		results = moviedb.get_tvshow_discover("it", genres = [genre])
 		message = messages['tvshow']['genre']
-	
+
 	elif mode == 5:
 		results = moviedb.get_tvshow_discover("it", year = year)
 		message = messages['tvshow']['year']
-	
+
 	else:
 		results = moviedb.search_tvshow(topic, "it")
 		message = messages['tvshow']['default']
@@ -519,11 +525,17 @@ def list_mirros_episode(
 	pDialog.close()
 	title = metadata_movie['title']
 	del metadata_movie['title']
+	times = 1
 
 	for mirror in mirrors:
 		list_item = xbmcgui.ListItem(
-			label = "[B]{} | {}[/B]".format(
-				mirror['mirror'], mirror['quality']
+			label = (
+				"[I]%d[/I] | [B]%s[/B] | [I][B]%s[/B][/I]"
+				% (
+					times,
+					mirror['mirror'],
+					mirror['quality']
+				)
 			)
 		)
 
@@ -540,6 +552,7 @@ def list_mirros_episode(
 
 		is_folder = False
 		xbmcplugin.addDirectoryItem(_handle, url, list_item, is_folder)
+		times += 1
 
 	xbmcplugin.endOfDirectory(_handle)
 
@@ -629,11 +642,17 @@ def list_mirros_movie(title, metadata_art, metadata_movie, metadata_cast):
 		times += 1
 
 	pDialog.close()
+	times = 1
 
 	for mirror in mirrors:
 		list_item = xbmcgui.ListItem(
-			label = "[B]{} | {}[/B]".format(
-				mirror['mirror'], mirror['quality']
+			label = (
+				"[I]%d[/I] | [B]%s[/B] | [I][B]%s[/B][/I]"
+				% (
+					times,
+					mirror['mirror'],
+					mirror['quality']
+				)
 			)
 		)
 
@@ -654,6 +673,7 @@ def list_mirros_movie(title, metadata_art, metadata_movie, metadata_cast):
 
 		is_folder = False
 		xbmcplugin.addDirectoryItem(_handle, url, list_item, is_folder)
+		times += 1
 
 	xbmcplugin.endOfDirectory(_handle)
 

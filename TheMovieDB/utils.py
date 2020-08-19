@@ -1,6 +1,18 @@
 #!/usr/bin/python3
 
+from requests import get
+from TheMovieDB.exceptions import error34
+
 api_image = "https://image.tmdb.org/t/p/original%s"
+
+def request(url):
+	result = get(url).json()
+
+	try:
+		msg = result['status_message']
+		raise error34(msg)
+	except KeyError:
+		return result
 
 def get_image(path):
 	url = api_image % path

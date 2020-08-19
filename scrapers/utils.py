@@ -127,10 +127,13 @@ def snip_decode(url):
 	return url
 
 def buckler_decode(url):
-	body = get(url, headers = headers).text
+	body = get(url, headers = headers)
+
+	if not "buckler" in body.url:
+		return body.url
 
 	url = (
-		body
+		body.text
 		.split("MDCore.share_fb('")[1]
 		.split("'")[0]
 	)

@@ -4,7 +4,7 @@ from hosts import hosts
 from sys import version_info
 from bs4 import BeautifulSoup
 from requests import post, get
-from exceptions.exceptions import VideoNotAvalaible
+from hosts.exceptions.exceptions import VideoNotAvalaible
 
 from scrapers.utils import (
 	recognize_link, recognize_mirror, m_identify
