@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # Author: An0nimia
 
 import xbmc
@@ -174,7 +173,7 @@ def search_movie(mode = 0, topic = None, genre = None, year = None):
 
 		progress = 100 * times // l_results
 		pDialog.update(progress, message)
-		title = result['title']
+		title = result['title'].encode("utf-8")
 		movie_id = result['id']
 		list_item = xbmcgui.ListItem(label = title)
 
@@ -187,19 +186,15 @@ def search_movie(mode = 0, topic = None, genre = None, year = None):
 		list_item.setCast(metadata_cast)
 		list_item.setInfo("video", metadata_movie)
 
-		try:
-			url = get_url(
-				action = "listing movies", title = title,
-				metadata_art = metadata_art,
-				metadata_movie = metadata_movie,
-				metadata_cast = metadata_cast
-			)
+		url = get_url(
+			action = "listing movies", title = title,
+			metadata_art = metadata_art,
+			metadata_movie = metadata_movie,
+			metadata_cast = metadata_cast
+		)
 
-			is_folder = True
-			xbmcplugin.addDirectoryItem(_handle, url, list_item, is_folder)
-		except UnicodeEncodeError:
-			pass
-
+		is_folder = True
+		xbmcplugin.addDirectoryItem(_handle, url, list_item, is_folder)
 		times += 1
 
 	pDialog.close()
@@ -250,7 +245,7 @@ def search_tvshow(mode = 0, topic = None, genre = None, year = None):
 
 		progress = 100 * times // l_results
 		pDialog.update(progress, message)
-		title = result['name']
+		title = result['name'].encode("utf-8")
 		tvshow_id = result['id']
 		list_item = xbmcgui.ListItem(label = title)
 		data = get_media_metadata.get_infos_tvshow(tvshow_id)
@@ -262,17 +257,13 @@ def search_tvshow(mode = 0, topic = None, genre = None, year = None):
 		list_item.setCast(metadata_cast)
 		list_item.setInfo("video", metadata_movie)
 
-		try:
-			url = get_url(
-				action = "show seasons", title = title,
-				tvshow_id = tvshow_id, seasons = seasons
-			)
+		url = get_url(
+			action = "show seasons", title = title,
+			tvshow_id = tvshow_id, seasons = seasons
+		)
 
-			is_folder = True
-			xbmcplugin.addDirectoryItem(_handle, url, list_item, is_folder)
-		except UnicodeEncodeError:
-			pass
-
+		is_folder = True
+		xbmcplugin.addDirectoryItem(_handle, url, list_item, is_folder)
 		times += 1
 
 	pDialog.close()
@@ -313,17 +304,13 @@ def search_person(person, which):
 		list_item.setArt(metadata_art)
 		list_item.setInfo("video", waste)
 
-		try:
-			url = get_url(
-				action = "show %s person" % which,
-				person_id = result['id'],
-			)
+		url = get_url(
+			action = "show %s person" % which,
+			person_id = result['id'],
+		)
 
-			is_folder = True
-			xbmcplugin.addDirectoryItem(_handle, url, list_item, is_folder)
-		except UnicodeEncodeError:
-			pass
-
+		is_folder = True
+		xbmcplugin.addDirectoryItem(_handle, url, list_item, is_folder)
 		times += 1
 
 	xbmc.sleep(800)
@@ -350,7 +337,7 @@ def list_film_person(person_id):
 
 		progress = 100 * times // l_results
 		pDialog.update(progress, messages['movie_list'])
-		title = result['title']
+		title = result['title'].encode("utf-8")
 		movie_id = result['id']
 		list_item = xbmcgui.ListItem(label = title)
 		metadata_art, metadata_movie, metadata_cast = get_media_metadata.get_infos_movie(movie_id)
@@ -358,19 +345,15 @@ def list_film_person(person_id):
 		list_item.setCast(metadata_cast)
 		list_item.setInfo("video", metadata_movie)
 
-		try:
-			url = get_url(
-				action = "listing movies", title = title,
-				metadata_art = metadata_art,
-				metadata_movie = metadata_movie,
-				metadata_cast = metadata_cast
-			)
+		url = get_url(
+			action = "listing movies", title = title,
+			metadata_art = metadata_art,
+			metadata_movie = metadata_movie,
+			metadata_cast = metadata_cast
+		)
 
-			is_folder = True
-			xbmcplugin.addDirectoryItem(_handle, url, list_item, is_folder)
-		except UnicodeEncodeError:
-			pass
-
+		is_folder = True
+		xbmcplugin.addDirectoryItem(_handle, url, list_item, is_folder)
 		times += 1
 
 	pDialog.close()
@@ -396,7 +379,7 @@ def list_tvshow_person(person_id):
 
 		progress = 100 * times // l_results
 		pDialog.update(progress, messages['tvshow_list'])
-		title = result['name']
+		title = result['name'].encode("utf-8")
 		tvshow_id = result['id']
 		list_item = xbmcgui.ListItem(label = title)
 		data = get_media_metadata.get_infos_tvshow(tvshow_id)
@@ -408,17 +391,13 @@ def list_tvshow_person(person_id):
 		list_item.setCast(metadata_cast)
 		list_item.setInfo("video", metadata_movie)
 
-		try:
-			url = get_url(
-				action = "show seasons", title = title,
-				tvshow_id = metadata_movie['setid'], seasons = seasons
-			)
+		url = get_url(
+			action = "show seasons", title = title,
+			tvshow_id = tvshow_id, seasons = seasons
+		)
 
-			is_folder = True
-			xbmcplugin.addDirectoryItem(_handle, url, list_item, is_folder)
-		except UnicodeEncodeError:
-			pass
-
+		is_folder = True
+		xbmcplugin.addDirectoryItem(_handle, url, list_item, is_folder)
 		times += 1
 
 	pDialog.close()
@@ -481,6 +460,7 @@ def list_mirros_episode(
 	metadata_movie, metadata_cast
 ):
 	from sites import sites_serietv
+	from requests import ReadTimeout
 
 	episode = int(episode)
 	metadata_art = eval(metadata_art)
@@ -516,14 +496,14 @@ def list_mirros_episode(
 					mirrors += current_mirrors
 
 			pDialog.update(progress, messages['episode'])
-		except IndexError:
+		except (IndexError, ReadTimeout):
 			pass
 
 		times += 1
 
 	xbmc.sleep(800)
 	pDialog.close()
-	title = metadata_movie['title']
+	title = metadata_movie['title'].encode("utf-8")
 	del metadata_movie['title']
 	times = 1
 
@@ -559,6 +539,7 @@ def list_mirros_episode(
 def list_mirros_movie(title, metadata_art, metadata_movie, metadata_cast):
 	from hosts import hosts
 	from sites import sites_film
+	from requests import ReadTimeout
 
 	metadata_art = eval(metadata_art)
 	metadata_movie = eval(metadata_movie)
@@ -636,7 +617,7 @@ def list_mirros_movie(title, metadata_art, metadata_movie, metadata_cast):
 				pDialog.update(progress, new_string)
 
 			mirrors += current_mirrors
-		except IndexError:
+		except (IndexError, ReadTimeout):
 			pass
 
 		times += 1
