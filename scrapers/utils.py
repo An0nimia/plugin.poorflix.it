@@ -80,7 +80,10 @@ def vcrypt_decode(url):
 
 	parse = BeautifulSoup(body.text, "html.parser")
 
-	if "wss" in url:
+	if "open" in url:
+		url = parse.find("iframe").get("src")
+
+	elif "wss" in url:
 		url = (
 			str(
 				parse.find("meta")
@@ -90,6 +93,7 @@ def vcrypt_decode(url):
 		)
 
 		url = get(url, headers = headers).url
+
 	else:
 		key = (
 			parse
