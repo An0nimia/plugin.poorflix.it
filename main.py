@@ -479,6 +479,7 @@ def list_mirros_episode(
 	l_results = len(sites_serietv)
 	times = 1
 	mirrors = []
+	title = title.split(" - ")[0]
 
 	for a in sites_serietv:
 		if pDialog.iscanceled():
@@ -570,6 +571,8 @@ def list_mirros_movie(title, metadata_art, metadata_movie, metadata_cast):
 	short_title = " ".join(
 		title.split(" ")[0:]
 	)
+
+	title = title.split(" - ")[0]
 
 	for a in sites_film:
 		if pDialog.iscanceled():
