@@ -9,14 +9,14 @@ sites_film = []
 sites_serietv = []
 
 films = [
-	"altadefinizione6", "ilgeniodellostreaming2", "altadefinizione3",
-	"altadefinizione7", "altadefinizione5", "altadefinizione4",
+	"altadefinizione6", "ilgeniodellostreaming2", "altadefinizione7",
+	"altadefinizione3", "altadefinizione5", "altadefinizione4",
 	"altadefinizione2", "cineblog01", "piratestreaming"
 ]
 
 serietvs = [
-	"eurostreaming1", "italiaserie", "piratestreaming",
-	"serietvu"
+	"eurostreaming1", "guardareserie1", "italiaserie",
+	"piratestreaming", "serietvu"
 ]
 
 for a in films:
