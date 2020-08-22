@@ -31,6 +31,15 @@ def recognize_link(link_mirror):
 
 	return link_mirror
 
+def get_domain(link):
+	link = (
+		link
+		.split(".")[0]
+		.split("//")[1]
+	)
+
+	return link
+
 def get_piece(pieces, typee = 0):
 	if_is = "(p,a,c,k,e,d)"
 
