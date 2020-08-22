@@ -29,7 +29,11 @@ def search_serie(serie_to_search):
 	how = json['results']
 
 	for a in parsing.find_all("div", class_ = "post-thumb"):
-		image = a.find("img").get("src")
+		try:
+			image = a.find("img").get("src")
+		except AttributeError:
+			image = None
+
 		some = a.find("a")
 		link = some.get("href")
 		title = some.get("title").replace(" Serie Tv", "")
