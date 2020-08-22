@@ -486,9 +486,19 @@ def list_mirros_episode(
 			return
 
 		progress = 100 * times // l_results
+		link = None
 
 		try:
-			link = a.search_serie(title)['results'][0]['link']
+			results = a.search_serie(title)['results']
+
+			for b in results:
+				if title == b['title']:
+					link = b['link']
+					break
+
+			if not link:
+				link = results[0]['link']
+
 			seasons = a.seasons(link)['results']
 
 			for b in seasons:
@@ -568,10 +578,6 @@ def list_mirros_movie(title, metadata_art, metadata_movie, metadata_cast):
 		[0, "[COLOR red]0[/COLOR]"]
 	]
 
-	short_title = " ".join(
-		title.split(" ")[0:]
-	)
-
 	title = title.split(" - ")[0]
 
 	for a in sites_film:
@@ -585,7 +591,7 @@ def list_mirros_movie(title, metadata_art, metadata_movie, metadata_cast):
 			results = a.search_film(title)['results']
 
 			for b in results:
-				if short_title == b['title']:
+				if title == b['title']:
 					link = b['link']
 					break
 
