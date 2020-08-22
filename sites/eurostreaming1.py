@@ -116,9 +116,9 @@ def seasons(serie_to_see):
 			link_mirror = b.get("href")
 
 			if not link_mirror:
-				link_mirror = ""
-
-			link_mirror = recognize_link(link_mirror)
+				link_mirror = None
+			else:
+				link_mirror = recognize_link(link_mirror)
 
 			links.append(
 				("720p", mirror, link_mirror)
