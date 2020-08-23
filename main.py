@@ -479,7 +479,12 @@ def list_mirros_episode(
 	l_results = len(sites_serietv)
 	times = 1
 	mirrors = []
-	title = title.split(" - ")[0]
+
+	title = (
+		title
+		.split(" - ")[0]
+		.lower()
+	)
 
 	for a in sites_serietv:
 		if pDialog.iscanceled():
@@ -492,7 +497,7 @@ def list_mirros_episode(
 			results = a.search_serie(title)['results']
 
 			for b in results:
-				if title == b['title']:
+				if title == b['title'].lower():
 					link = b['link']
 					break
 
@@ -500,6 +505,12 @@ def list_mirros_episode(
 				link = results[0]['link']
 
 			seasons = a.seasons(link)['results']
+			index = 1
+
+			while not seasons:
+				link = results[times]['link']
+				seasons = a.seasons(link)['results']
+				index += 1
 
 			for b in seasons:
 				if season in b['title']:
@@ -578,7 +589,11 @@ def list_mirros_movie(title, metadata_art, metadata_movie, metadata_cast):
 		[0, "[COLOR red]0[/COLOR]"]
 	]
 
-	title = title.split(" - ")[0]
+	title = (
+		title
+		.split(" - ")[0]
+		.lower()
+	)
 
 	for a in sites_film:
 		if pDialog.iscanceled():
@@ -591,7 +606,7 @@ def list_mirros_movie(title, metadata_art, metadata_movie, metadata_cast):
 			results = a.search_film(title)['results']
 
 			for b in results:
-				if title == b['title']:
+				if title == b['title'].lower():
 					link = b['link']
 					break
 
