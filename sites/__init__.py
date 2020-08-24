@@ -15,7 +15,7 @@ films = [
 ]
 
 serietvs = [
-	"eurostreaming1", "guardareserie1", "italiaserie",
+	"eurostreaming1", "italiaserie",
 	"piratestreaming", "serietvu"
 ]
 
