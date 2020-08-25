@@ -16,6 +16,7 @@ search_tvshow_image = "images/search_tvshow.png"
 tvshow_image = "images/tvshows.png"
 movie_years_image = "images/years.png"
 tvshow_years_image = "images/years_tvshow.png"
+next_image = "images/next.png"
 movieDB_api_key = "8804be4f30f706e9e0ec40c32d961635"
 
 menu_items = [
@@ -76,4 +77,5 @@ messages = {
 	"movie_list": "Ma quanto mi fai sgobbare?",
 	"tvshow_list": "Stai per ritrovarti nella selva oscura",
 	"episode": "Sei consapevole del fatto che andrai a dormire alle 4 del mattino, no?",
+	"playing": "Non sfondare il muro"
 }
