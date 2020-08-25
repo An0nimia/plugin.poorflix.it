@@ -84,7 +84,7 @@ def show_genres(which):
 		list_item.setInfo("video", waste)
 
 		url = get_url(
-			action = "%sgenre" % which,
+			action = "%s_genre" % which,
 			genre = name
 		)
 
@@ -114,7 +114,7 @@ def show_years(which):
 		list_item.setInfo("video", waste)
 
 		url = get_url(
-			action = "%syear" % which,
+			action = "%s_year" % which,
 			year = c_year
 		)
 
@@ -368,7 +368,7 @@ def search_person(person, which, page = 1):
 		list_item.setInfo("video", metadata)
 
 		url = get_url(
-			action = "show %s person" % which,
+			action = "show_%s_person" % which,
 			person_id = result['id'],
 		)
 
@@ -400,7 +400,6 @@ def search_person(person, which, page = 1):
 
 		xbmcplugin.addDirectoryItem(_handle, url, list_item, is_folder)
 
-	xbmc.sleep(800)
 	pDialog.close()
 	xbmcplugin.endOfDirectory(_handle)
 
@@ -614,7 +613,6 @@ def list_mirros_episode(
 
 		times += 1
 
-	xbmc.sleep(800)
 	pDialog.close()
 	title = metadata_movie['title'].encode("utf-8")
 	del metadata_movie['title']
