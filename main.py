@@ -59,6 +59,8 @@ def initialize(items):
 	xbmcplugin.endOfDirectory(_handle)
 
 def show_genres(which):
+	from utils import waste
+
 	xbmcplugin.setPluginCategory(_handle, "Result")
 	xbmcplugin.setContent(_handle, which)
 
@@ -78,10 +80,6 @@ def show_genres(which):
 			"poster": image_path % settings.movie_genres_image,
 		}
 
-		waste = {
-			"mediatype": "movie"
-		}
-
 		list_item.setArt(metadata)
 		list_item.setInfo("video", waste)
 
@@ -96,6 +94,7 @@ def show_genres(which):
 	xbmcplugin.endOfDirectory(_handle)
 
 def show_years(which):
+	from utils import waste
 	from datetime import datetime
 
 	xbmcplugin.setPluginCategory(_handle, "Result")
@@ -111,10 +110,6 @@ def show_years(which):
 			"poster": image_path % settings.movie_years_image,
 		}
 
-		waste = {
-			"mediatype": "movie"
-		}
-
 		list_item.setArt(metadata)
 		list_item.setInfo("video", waste)
 
@@ -128,34 +123,42 @@ def show_years(which):
 
 	xbmcplugin.endOfDirectory(_handle)
 
-def search_movie(mode = 0, topic = None, genre = None, year = None):
+def search_movie(
+	mode = 0,
+	page = 1,
+	topic = None,
+	genre = None,
+	year = None
+):
 	xbmcplugin.setPluginCategory(_handle, "Result")
 	xbmcplugin.setContent(_handle, "movies")
 
 	if mode == 1:
-		results = moviedb.get_movie_popular("it")
+		results = moviedb.get_movie_popular("it", page)
 		message = messages['movie']['popular']
 
 	elif mode == 2:
-		results = moviedb.get_movie_top_rated("it")
+		results = moviedb.get_movie_top_rated("it", page)
 		message = messages['movie']['top_rated']
 
 	elif mode == 3:
-		results = moviedb.get_movie_discover("it")
+		results = moviedb.get_movie_discover("it", page)
 		message = messages['movie']['discover']
 
 	elif mode == 4:
-		results = moviedb.get_movie_discover("it", genres = [genre])
+		results = moviedb.get_movie_discover("it", page, genres = [genre])
 		message = messages['movie']['genre']
 
 	elif mode == 5:
-		results = moviedb.get_movie_discover("it", year = year)
+		results = moviedb.get_movie_discover("it", page, year = year)
 		message = messages['movie']['year']
 
 	else:
-		results = moviedb.search_movie(topic, "it")
+		results = moviedb.search_movie(topic, "it", page)
 		message = messages['movie']['default']
 
+	c_page = results['page']
+	all_page = results['total_pages']
 	results = results['results']
 	pDialog = xbmcgui.DialogProgress()
 
@@ -187,7 +190,7 @@ def search_movie(mode = 0, topic = None, genre = None, year = None):
 		list_item.setInfo("video", metadata_movie)
 
 		url = get_url(
-			action = "listing movies", title = title,
+			action = "listing_movies", title = title,
 			metadata_art = metadata_art,
 			metadata_movie = metadata_movie,
 			metadata_cast = metadata_cast
@@ -197,37 +200,71 @@ def search_movie(mode = 0, topic = None, genre = None, year = None):
 		xbmcplugin.addDirectoryItem(_handle, url, list_item, is_folder)
 		times += 1
 
+	if c_page != all_page:
+		from utils import waste
+
+		list_item = xbmcgui.ListItem(
+			label = "[I]Next page[/I]"
+		)
+
+		metadata = {
+			"fanart": image_path % "back.jpg",
+			"poster": image_path % settings.next_image,
+		}
+
+		list_item.setArt(metadata)
+		list_item.setInfo("video", waste)
+
+		url = get_url(
+			action = "movies_page",
+			mode = mode,
+			page = c_page + 1,
+			topic = topic,
+			genre = genre,
+			year = year
+		)
+
+		xbmcplugin.addDirectoryItem(_handle, url, list_item, is_folder)
+
 	pDialog.close()
 	xbmcplugin.endOfDirectory(_handle)
 
-def search_tvshow(mode = 0, topic = None, genre = None, year = None):
+def search_tvshow(
+	mode = 0,
+	page = 1,
+	topic = None,
+	genre = None,
+	year = None
+):
 	xbmcplugin.setPluginCategory(_handle, "Result")
 	xbmcplugin.setContent(_handle, "tvshows")
 
 	if mode == 1:
-		results = moviedb.get_tvshow_popular("it")
+		results = moviedb.get_tvshow_popular("it", page)
 		message = messages['tvshow']['popular']
 
 	elif mode == 2:
-		results = moviedb.get_tvshow_top_rated("it")
+		results = moviedb.get_tvshow_top_rated("it", page)
 		message = messages['tvshow']['top_rated']
 
 	elif mode == 3:
-		results = moviedb.get_tvshow_discover("it")
+		results = moviedb.get_tvshow_discover("it", page)
 		message = messages['tvshow']['discover']
 
 	elif mode == 4:
-		results = moviedb.get_tvshow_discover("it", genres = [genre])
+		results = moviedb.get_tvshow_discover("it", page, genres = [genre])
 		message = messages['tvshow']['genre']
 
 	elif mode == 5:
-		results = moviedb.get_tvshow_discover("it", year = year)
+		results = moviedb.get_tvshow_discover("it", page, year = year)
 		message = messages['tvshow']['year']
 
 	else:
-		results = moviedb.search_tvshow(topic, "it")
+		results = moviedb.search_tvshow(topic, "it", page)
 		message = messages['tvshow']['default']
 
+	c_page = results['page']
+	all_page = results['total_pages']
 	results = results['results']
 	pDialog = xbmcgui.DialogProgress()
 
@@ -258,7 +295,7 @@ def search_tvshow(mode = 0, topic = None, genre = None, year = None):
 		list_item.setInfo("video", metadata_movie)
 
 		url = get_url(
-			action = "show seasons", title = title,
+			action = "show_seasons", title = title,
 			tvshow_id = tvshow_id, seasons = seasons
 		)
 
@@ -266,13 +303,39 @@ def search_tvshow(mode = 0, topic = None, genre = None, year = None):
 		xbmcplugin.addDirectoryItem(_handle, url, list_item, is_folder)
 		times += 1
 
+	if c_page != all_page:
+		from utils import waste
+
+		list_item = xbmcgui.ListItem(
+			label = "[I]Next page[/I]"
+		)
+
+		metadata = {
+			"fanart": image_path % "back.jpg",
+			"poster": image_path % settings.next_image,
+		}
+
+		list_item.setArt(metadata)
+		list_item.setInfo("video", waste)
+
+		url = get_url(
+			action = "tvshows_page",
+			mode = mode,
+			page = c_page + 1,
+			topic = topic,
+			genre = genre,
+			year = year
+		)
+
+		xbmcplugin.addDirectoryItem(_handle, url, list_item, is_folder)
+
 	pDialog.close()
 	xbmcplugin.endOfDirectory(_handle)
 
-def search_person(person, which):
+def search_person(person, which, page = 1):
 	xbmcplugin.setPluginCategory(_handle, "Result")
 	xbmcplugin.setContent(_handle, "people")
-	results = moviedb.search_person(person, "it")['results']
+	results = moviedb.search_person(person, "it", page)
 	pDialog = xbmcgui.DialogProgress()
 
 	pDialog.create(
@@ -280,6 +343,9 @@ def search_person(person, which):
 		messages['start_search']['text']
 	)
 
+	c_page = results['page']
+	all_page = results['total_pages']
+	results = results['results']
 	l_results = len(results)
 	times = 1
 
@@ -297,12 +363,9 @@ def search_person(person, which):
 			"fanart": image_path % "back.jpg"
 		}
 
-		waste = {
-			"mediatype": "movie"
-		}
-
 		list_item.setArt(metadata_art)
-		list_item.setInfo("video", waste)
+		metadata = get_media_metadata.get_infos_person(result['id'])
+		list_item.setInfo("video", metadata)
 
 		url = get_url(
 			action = "show %s person" % which,
@@ -312,6 +375,30 @@ def search_person(person, which):
 		is_folder = True
 		xbmcplugin.addDirectoryItem(_handle, url, list_item, is_folder)
 		times += 1
+
+	if c_page != all_page:
+		from utils import waste
+
+		list_item = xbmcgui.ListItem(
+			label = "[I]Next page[/I]"
+		)
+
+		metadata = {
+			"fanart": image_path % "back.jpg",
+			"poster": image_path % settings.next_image,
+		}
+
+		list_item.setArt(metadata)
+		list_item.setInfo("video", waste)
+
+		url = get_url(
+			action = "person_page",
+			person = person,
+			which = which,
+			page = c_page + 1
+		)
+
+		xbmcplugin.addDirectoryItem(_handle, url, list_item, is_folder)
 
 	xbmc.sleep(800)
 	pDialog.close()
@@ -346,7 +433,7 @@ def list_film_person(person_id):
 		list_item.setInfo("video", metadata_movie)
 
 		url = get_url(
-			action = "listing movies", title = title,
+			action = "listing_movies", title = title,
 			metadata_art = metadata_art,
 			metadata_movie = metadata_movie,
 			metadata_cast = metadata_cast
@@ -392,7 +479,7 @@ def list_tvshow_person(person_id):
 		list_item.setInfo("video", metadata_movie)
 
 		url = get_url(
-			action = "show seasons", title = title,
+			action = "show_seasons", title = title,
 			tvshow_id = tvshow_id, seasons = seasons
 		)
 
@@ -417,7 +504,7 @@ def list_seasons(title, tvshow_id, seasons):
 		list_item.setInfo("video", metadata_movie)
 
 		url = get_url(
-			action = "show episodes", title = title,
+			action = "show_episodes", title = title,
 			tvshow_id = tvshow_id, season = a['season_number']
 		)
 
@@ -461,6 +548,8 @@ def list_mirros_episode(
 ):
 	from sites import sites_serietv
 	from requests import ReadTimeout
+	from utils import optimize_title
+	from difflib import SequenceMatcher
 
 	episode = int(episode)
 	metadata_art = eval(metadata_art)
@@ -479,12 +568,7 @@ def list_mirros_episode(
 	l_results = len(sites_serietv)
 	times = 1
 	mirrors = []
-
-	title = (
-		title
-		.split(" - ")[0]
-		.lower()
-	)
+	title = title.lower()
 
 	for a in sites_serietv:
 		if pDialog.iscanceled():
@@ -497,12 +581,19 @@ def list_mirros_episode(
 			results = a.search_serie(title)['results']
 
 			for b in results:
-				if title == b['title'].lower():
+				c_title = optimize_title(b['title'])
+
+				ratio = SequenceMatcher(
+					a = title,
+					b = c_title
+				).ratio()
+
+				if ratio >= 0.95:
 					link = b['link']
 					break
 
 			if not link:
-				link = results[0]['link']
+				continue
 
 			seasons = a.seasons(link)['results']
 			index = 1
@@ -559,9 +650,10 @@ def list_mirros_episode(
 	xbmcplugin.endOfDirectory(_handle)
 
 def list_mirros_movie(title, metadata_art, metadata_movie, metadata_cast):
-	from hosts import hosts
 	from sites import sites_film
 	from requests import ReadTimeout
+	from utils import optimize_title
+	from difflib import SequenceMatcher
 
 	metadata_art = eval(metadata_art)
 	metadata_movie = eval(metadata_movie)
@@ -589,11 +681,7 @@ def list_mirros_movie(title, metadata_art, metadata_movie, metadata_cast):
 		[0, "[COLOR red]0[/COLOR]"]
 	]
 
-	title = (
-		title
-		.split(" - ")[0]
-		.lower()
-	)
+	title = title.lower()
 
 	for a in sites_film:
 		if pDialog.iscanceled():
@@ -606,12 +694,19 @@ def list_mirros_movie(title, metadata_art, metadata_movie, metadata_cast):
 			results = a.search_film(title)['results']
 
 			for b in results:
-				if title == b['title'].lower():
+				c_title = optimize_title(b['title'])
+
+				ratio = SequenceMatcher(
+					a = title,
+					b = c_title
+				).ratio()
+
+				if ratio >= 0.95:
 					link = b['link']
 					break
 
 			if not link:
-				link = results[0]['link']
+				continue
 
 			current_mirrors = a.search_mirrors(link)['results']
 
@@ -661,10 +756,6 @@ def list_mirros_movie(title, metadata_art, metadata_movie, metadata_cast):
 			)
 		)
 
-		source = mirror['mirror']
-		icon = hosts[source].Metadata().icon
-		metadata_art['icon'] = icon
-		metadata_art['banner'] = icon
 		list_item.setArt(metadata_art)
 		list_item.setCast(metadata_cast)
 		list_item.setInfo("video", metadata_movie)
@@ -745,14 +836,20 @@ def router(paramstring):
 		elif params['action'] == settings.film_menu_items[5][0]:
 			show_years("movies")
 
-		elif params['action'] == "moviesyear":
+		elif params['action'] == "movies_year":
 			search_movie(5, year = params['year'])
 
 		elif params['action'] == settings.film_menu_items[6][0]:
 			show_genres("movies")
 
-		elif params['action'] == "moviesgenre":
+		elif params['action'] == "movies_genre":
 			search_movie(4, genre = params['genre'])
+
+		elif params['action'] == "movies_page":
+			search_movie(
+				int(params['mode']), int(params['page']),
+				params['topic'], params['genre'], params['year']
+			)
 
 		elif params['action'] == settings.tvshow_menu_items[0][0]:
 			topic = show_keyboard()
@@ -782,34 +879,40 @@ def router(paramstring):
 		elif params['action'] == settings.tvshow_menu_items[5][0]:
 			show_years("tvshows")
 
-		elif params['action'] == "tvshowsyear":
+		elif params['action'] == "tvshows_year":
 			search_tvshow(5, year = params['year'])
 
 		elif params['action'] == settings.tvshow_menu_items[6][0]:
 			show_genres("tvshows")
 
-		elif params['action'] == "tvshowsgenre":
+		elif params['action'] == "tvshows_genre":
 			search_tvshow(4, genre = params['genre'])
 
-		elif params['action'] == "show seasons":
+		elif params['action'] == "tvshows_page":
+			search_tvshow(
+				int(params['mode']), int(params['page']),
+				params['topic'], params['genre'], params['year']
+			)
+
+		elif params['action'] == "show_seasons":
 			list_seasons(
 				params['title'], params['tvshow_id'],
 				params['seasons']
 			)
 
-		elif params['action'] == "show episodes":
+		elif params['action'] == "show_episodes":
 			list_episodes(
 				params['title'], params['tvshow_id'],
 				params['season']
 			)
 
-		elif params['action'] == "show movies person":
+		elif params['action'] == "show_movies_person":
 			list_film_person(params['person_id'])
 
-		elif params['action'] == "show tvshows person":
+		elif params['action'] == "show_tvshows_person":
 			list_tvshow_person(params['person_id'])
 
-		elif params['action'] == "listing movies":
+		elif params['action'] == "listing_movies":
 			list_mirros_movie(
 				params['title'], params['metadata_art'],
 				params['metadata_movie'], params['metadata_cast']
@@ -820,6 +923,12 @@ def router(paramstring):
 				params['title'], params['season'],
 				params['episode'], params['metadata_art'],
 				params['metadata_movie'], params['metadata_cast']
+			)
+
+		elif params['action'] == "person_page":
+			search_person(
+				params['person'], params['which'],
+				params['page']
 			)
 
 		elif params['action'] == "play":
