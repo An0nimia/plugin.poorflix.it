@@ -36,7 +36,7 @@ def search_serie(serie_to_search):
 		title = (
 			a.find("div", class_ = "title")
 			.get_text()
-			.split("\n")[0]
+			.split("\n")[0][:-1]
 		)
 
 		data = {

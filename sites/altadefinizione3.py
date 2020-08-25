@@ -42,7 +42,7 @@ def search_film(film_to_search):
 	for a in parsing.find_all("div", class_ = "cover_kapsul ml-mask"):
 		image = a.find("img").get("data-src")
 		link = a.find("a").get("href")
-		title = a.find("h2").get_text()
+		title = a.find("h2").get_text()[1:-1]
 
 		data = {
 			"title": title,
