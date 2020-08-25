@@ -97,3 +97,14 @@ def get_infos_episode(tvshow_id, episode):
 
 	metadata_cast = moviedbutils.get_cast_dict(cast_data)
 	return metadata_art, metadata_movie, metadata_cast
+
+def get_infos_person(person_id):
+	result = moviedb.get_person(person_id)
+	biography = result['biography']
+
+	metadata = {
+		"plot": biography,
+		"mediatype": "movie"
+	}
+
+	return metadata
