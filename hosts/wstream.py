@@ -6,8 +6,8 @@ from scrapers.utils import headers, get_piece
 
 class Metadata:
 	def __init__(self):
-		self.logo = None
-		self.icon = None
+		self.logo = "https://wstream.video/img/logo.png"
+		self.icon = "https://wstream.video/favicon.ico"
 
 def decode_nored(url):
 	body = get(url).text
@@ -44,12 +44,6 @@ def get_emb(url):
 	if "nored" in url:
 		url = decode_nored(url)
 
-	if "fastredirect" in url:
-		body = get(url, headers = headers).text
-		parse = BeautifulSoup(body, "html.parser")
-		path = parse.find("form").get("action")
-		url = "https://wstream.video%s" % path
-
 	if not "video6zvimpy52" in url:
 		url = url.split("/")
 		url[-1] = url[-1].replace(".html", "")
@@ -59,7 +53,9 @@ def get_emb(url):
 	return url
 
 def get_video(url):
-	url = get_emb(url)
+	if not "fastredirect" in url:
+		url = get_emb(url)
+
 	body = get(url, headers = headers).text
 	pieces = BeautifulSoup(body, "html.parser").find_all("script")
 	piece = get_piece(pieces)
