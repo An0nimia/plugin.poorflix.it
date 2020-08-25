@@ -89,12 +89,13 @@ class MovieDB:
 		result = request(url)
 		return result
 
-	def get_movie_popular(self, language = "en-US"):
+	def get_movie_popular(self, language = "en-US", page = 1):
 		params = (
-			"?api_key=%s&language=%s"
+			"?api_key=%s&language=%s&page=%d"
 			% (
 				self.api_key,
-				language
+				language,
+				page
 			)
 		)
 
@@ -103,12 +104,13 @@ class MovieDB:
 		result = request(url)
 		return result
 
-	def get_movie_top_rated(self, language = "en-US"):
+	def get_movie_top_rated(self, language = "en-US", page = 1):
 		params = (
-			"?api_key=%s&language=%s"
+			"?api_key=%s&language=%s&page=%d"
 			% (
 				self.api_key,
-				language
+				language,
+				page
 			)
 		)
 
@@ -120,6 +122,7 @@ class MovieDB:
 	def get_movie_discover(
 		self,
 		language = "en-US",
+		page = 1,
 		year = None,
 		genres = []
 	):
@@ -139,10 +142,11 @@ class MovieDB:
 		)
 
 		params = (
-			"?api_key=%s&language=%s&year=%s&with_genres=%s"
+			"?api_key=%s&language=%s&page=%d&year=%s&with_genres=%s"
 			% (
 				self.api_key,
 				language,
+				page,
 				year,
 				genres
 			)
@@ -168,12 +172,13 @@ class MovieDB:
 		result = request(url)
 		return result
 
-	def get_tvshow_popular(self, language = "en-US"):
+	def get_tvshow_popular(self, language = "en-US", page = 1):
 		params = (
-			"?api_key=%s&language=%s"
+			"?api_key=%s&language=%s&page=%d"
 			% (
 				self.api_key,
-				language
+				language,
+				page
 			)
 		)
 
@@ -182,12 +187,13 @@ class MovieDB:
 		result = request(url)
 		return result
 
-	def get_tvshow_top_rated(self, language = "en-US"):
+	def get_tvshow_top_rated(self, language = "en-US", page = 1):
 		params = (
-			"?api_key=%s&language=%s"
+			"?api_key=%s&language=%s&page=%d"
 			% (
 				self.api_key,
-				language
+				language,
+				page
 			)
 		)
 
@@ -199,6 +205,7 @@ class MovieDB:
 	def get_tvshow_discover(
 		self,
 		language = "en-US",
+		page = 1,
 		year = None,
 		genres = []
 	):
@@ -218,10 +225,11 @@ class MovieDB:
 		)
 
 		params = (
-			"?api_key=%s&language=%s&first_air_date_year=%s&with_genres=%s"
+			"?api_key=%s&language=%s&page=%d&first_air_date_year=%s&with_genres=%s"
 			% (
 				self.api_key,
 				language,
+				page,
 				year,
 				genres
 			)
@@ -246,6 +254,21 @@ class MovieDB:
 		)
 
 		path = "/tv/{}/season/{}".format(tvshow_id, params)
+		url = api_infos % path
+		result = request(url)
+		return result
+
+	def get_person(self, person_id, language = "en-US"):
+		params = (
+			"%s?api_key=%s&language=%s"
+			% (
+				person_id,
+				self.api_key,
+				language
+			)
+		)
+
+		path = "/person/%s" % params
 		url = api_infos % path
 		result = request(url)
 		return result
