@@ -175,7 +175,6 @@ def search_movie(
 			return
 
 		progress = 100 * times // l_results
-		pDialog.update(progress, message)
 		title = result['title'].encode("utf-8")
 		movie_id = result['id']
 		list_item = xbmcgui.ListItem(label = title)
@@ -183,6 +182,8 @@ def search_movie(
 		try:
 			metadata_art, metadata_movie, metadata_cast = get_media_metadata.get_infos_movie(movie_id)
 		except error34:
+			pDialog.update(progress, message)
+			times += 1
 			continue
 
 		list_item.setArt(metadata_art)
@@ -198,6 +199,7 @@ def search_movie(
 
 		is_folder = True
 		xbmcplugin.addDirectoryItem(_handle, url, list_item, is_folder)
+		pDialog.update(progress, message)
 		times += 1
 
 	if c_page != all_page:
@@ -578,39 +580,46 @@ def list_mirros_episode(
 
 		try:
 			results = a.search_serie(title)['results']
-
-			for b in results:
-				c_title = optimize_title(b['title'])
-
-				ratio = SequenceMatcher(
-					a = title,
-					b = c_title
-				).ratio()
-
-				if ratio >= 0.95:
-					link = b['link']
-					break
-
-			if not link:
-				continue
-
-			seasons = a.seasons(link)['results']
-			index = 1
-
-			while not seasons:
-				link = results[times]['link']
-				seasons = a.seasons(link)['results']
-				index += 1
-
-			for b in seasons:
-				if season in b['title']:
-					current_mirrors = b['episodes'][episode - 1]['mirrors']
-					mirrors += current_mirrors
-
+		except ReadTimeout:
 			pDialog.update(progress, messages['episode'])
-		except (IndexError, ReadTimeout):
-			pass
+			times += 1
+			continue
 
+		for b in results:
+			c_title = optimize_title(b['title'])
+
+			ratio = SequenceMatcher(
+				a = title,
+				b = c_title
+			).ratio()
+
+			if ratio >= 0.95:
+				link = b['link']
+				break
+
+		if not link:
+			pDialog.update(progress, messages['episode'])
+			times += 1
+			continue
+
+		seasons = a.seasons(link)['results']
+		l_max = len(seasons) - 1
+		index = 1
+
+		while not seasons:
+			if index == l_max:
+				break
+
+			link = results[index]['link']
+			seasons = a.seasons(link)['results']
+			index += 1
+
+		for b in seasons:
+			if season in b['title']:
+				current_mirrors = b['episodes'][episode - 1]['mirrors']
+				mirrors += current_mirrors
+
+		pDialog.update(progress, messages['episode'])
 		times += 1
 
 	pDialog.close()
@@ -680,6 +689,7 @@ def list_mirros_movie(title, metadata_art, metadata_movie, metadata_cast):
 	]
 
 	title = title.lower()
+	new_string = ""
 
 	for a in sites_film:
 		if pDialog.iscanceled():
@@ -690,53 +700,56 @@ def list_mirros_movie(title, metadata_art, metadata_movie, metadata_cast):
 
 		try:
 			results = a.search_film(title)['results']
+		except ReadTimeout:
+			pDialog.update(progress, new_string)
+			times += 1
+			continue
 
-			for b in results:
-				c_title = optimize_title(b['title'])
+		for b in results:
+			c_title = optimize_title(b['title'])
 
-				ratio = SequenceMatcher(
-					a = title,
-					b = c_title
-				).ratio()
+			ratio = SequenceMatcher(
+				a = title,
+				b = c_title
+			).ratio()
 
-				if ratio >= 0.95:
-					link = b['link']
+			if ratio >= 0.95:
+				link = b['link']
+				break
+
+		if not link:
+			pDialog.update(progress, new_string)
+			times += 1
+			continue
+
+		current_mirrors = a.search_mirrors(link)['results']
+
+		for b in current_mirrors:
+			for c in qualities[:-1]:
+				if b['quality'] == c[2]:
+					c[0] += 1
+					c[1] = "[COLOR green]%d[/COLOR]" % c[0]
 					break
 
-			if not link:
-				continue
+			alls = qualities[-1]
+			alls[0] += 1
+			alls[1] = "[COLOR green]%d[/COLOR]" % alls[0]
 
-			current_mirrors = a.search_mirrors(link)['results']
-
-			for b in current_mirrors:
-				for c in qualities[:-1]:
-					if b['quality'] == c[2]:
-						c[0] += 1
-						c[1] = "[COLOR green]%d[/COLOR]" % c[0]
-						break
-
-				alls = qualities[-1]
-				alls[0] += 1
-				alls[1] = "[COLOR green]%d[/COLOR]" % alls[0]
-
-				new_string = (
-					"4k: %s | 1080p: %s | 720p: %s | 480p: %s | 360p: %s | Total: %s"
-					% (
-						qualities[4][1],
-						qualities[3][1],
-						qualities[2][1],
-						qualities[1][1],
-						qualities[0][1],
-						alls[1]
-					)
+			new_string = (
+				"4k: %s | 1080p: %s | 720p: %s | 480p: %s | 360p: %s | Total: %s"
+				% (
+					qualities[4][1],
+					qualities[3][1],
+					qualities[2][1],
+					qualities[1][1],
+					qualities[0][1],
+					alls[1]
 				)
+			)
 
-				pDialog.update(progress, new_string)
+			pDialog.update(progress, new_string)
 
-			mirrors += current_mirrors
-		except (IndexError, ReadTimeout):
-			pass
-
+		mirrors += current_mirrors
 		times += 1
 
 	pDialog.close()
