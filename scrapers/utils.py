@@ -31,6 +31,17 @@ def recognize_link(link_mirror):
 
 	return link_mirror
 
+def recognize_title(title):
+	title = (
+		title
+		.replace(" Serie Tv", "")
+		.replace(" Serie TV", "")
+		.replace(" streaming", "")
+		.replace("la Serie", "La Serie")
+	)
+
+	return title
+
 def get_domain(link):
 	link = (
 		link

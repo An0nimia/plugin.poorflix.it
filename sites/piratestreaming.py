@@ -17,8 +17,44 @@ timeout = 4
 if version_info.major < 3:
 	input = raw_input
 
+def search(to_search):
+	search_url = "{}?s={}".format(host, to_search)
+	body = get(search_url, timeout = timeout).text
+	parsing = BeautifulSoup(body, "html.parser")
+
+	json = {
+		"results": []
+	}
+
+	how = json['results']
+
+	for a in parsing.find_all("div", class_ = "container-index-post col-xs-4 col-sm-3 col-md-2-5 col-lg-2"):
+		image = a.find("img").get("src")
+		link = a.find("a").get("href")
+		title = a.find("h2").get_text()
+
+		data = {
+			"title": title,
+			"link": link,
+			"image": image
+		}
+
+		how.append(data)
+
+	return json
+
 def search_film(film_to_search):
-	json = search_serie(film_to_search)
+	json = search(film_to_search)
+	results = json['results']
+
+	for a in results:
+		body = get(a['link']).text
+		parsing = BeautifulSoup(body, "html.parser")
+		iframes = parsing.find_all("iframe")
+
+		if not iframes:
+			results.remove(a)
+
 	return json
 
 def search_mirrors(film_to_see):
@@ -71,28 +107,16 @@ def search_mirrors(film_to_see):
 	return json
 
 def search_serie(serie_to_search):
-	search_url = "{}?s={}".format(host, serie_to_search)
-	body = get(search_url, timeout = timeout).text
-	parsing = BeautifulSoup(body, "html.parser")
+	json = search(serie_to_search)
+	results = json['results']
 
-	json = {
-		"results": []
-	}
+	for a in results:
+		body = get(a['link']).text
+		parsing = BeautifulSoup(body, "html.parser")
+		titles = parsing.find_all("div", class_ = "su-spoiler-title")
 
-	how = json['results']
-
-	for a in parsing.find_all("div", class_ = "container-index-post col-xs-4 col-sm-3 col-md-2-5 col-lg-2"):
-		image = a.find("img").get("src")
-		link = a.find("a").get("href")
-		title = a.find("h2").get_text()
-
-		data = {
-			"title": title,
-			"link": link,
-			"image": image
-		}
-
-		how.append(data)
+		if not titles:
+			results.remove(a)
 
 	return json
 

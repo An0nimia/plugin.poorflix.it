@@ -593,7 +593,7 @@ def list_mirros_episode(
 				b = c_title
 			).ratio()
 
-			if ratio >= 0.95:
+			if ratio >= 0.94:
 				link = b['link']
 				break
 
@@ -603,16 +603,6 @@ def list_mirros_episode(
 			continue
 
 		seasons = a.seasons(link)['results']
-		l_max = len(seasons) - 1
-		index = 1
-
-		while not seasons:
-			if index == l_max:
-				break
-
-			link = results[index]['link']
-			seasons = a.seasons(link)['results']
-			index += 1
 
 		for b in seasons:
 			if season in b['title']:
@@ -713,7 +703,7 @@ def list_mirros_movie(title, metadata_art, metadata_movie, metadata_cast):
 				b = c_title
 			).ratio()
 
-			if ratio >= 0.95:
+			if ratio >= 0.94:
 				link = b['link']
 				break
 

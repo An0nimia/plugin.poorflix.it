@@ -8,7 +8,8 @@ from bs4 import BeautifulSoup
 from hosts.exceptions.exceptions import VideoNotAvalaible
 
 from scrapers.utils import (
-	recognize_link, recognize_mirror, m_identify
+	recognize_link, recognize_mirror,
+	recognize_title, m_identify
 )
 
 host = "https://eurostreaming.cloud/"
@@ -36,7 +37,10 @@ def search_serie(serie_to_search):
 		image = a.find("img").get("src")
 		some = a.find("a")
 		link = some.get("href")
-		title = some.get("title").replace(" Serie Tv", "")
+
+		title = recognize_title(
+			some.get("title")
+		)
 
 		data = {
 			"title": title,
