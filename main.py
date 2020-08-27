@@ -226,6 +226,7 @@ def search_movie(
 			year = year
 		)
 
+		is_folder = True
 		xbmcplugin.addDirectoryItem(_handle, url, list_item, is_folder)
 
 	pDialog.close()
@@ -329,6 +330,7 @@ def search_tvshow(
 			year = year
 		)
 
+		is_folder = True
 		xbmcplugin.addDirectoryItem(_handle, url, list_item, is_folder)
 
 	pDialog.close()
@@ -400,6 +402,7 @@ def search_person(person, which, page = 1):
 			page = c_page + 1
 		)
 
+		is_folder = True
 		xbmcplugin.addDirectoryItem(_handle, url, list_item, is_folder)
 
 	pDialog.close()
@@ -492,7 +495,6 @@ def list_tvshow_person(person_id):
 	xbmcplugin.endOfDirectory(_handle)
 
 def list_seasons(title, tvshow_id, seasons):
-	seasons = eval(seasons)
 	xbmcplugin.setPluginCategory(_handle, "Result")
 	xbmcplugin.setContent(_handle, "tvshows")
 
@@ -552,11 +554,7 @@ def list_mirros_episode(
 	from utils import optimize_title
 	from difflib import SequenceMatcher
 
-	episode = int(episode)
-	metadata_art = eval(metadata_art)
 	metadata_art['fanart'] = image_path % "back.jpg"
-	metadata_movie = eval(metadata_movie)
-	metadata_cast = eval(metadata_cast)
 	xbmcplugin.setPluginCategory(_handle, "Mirror")
 	xbmcplugin.setContent(_handle, "tvshows")
 	pDialog = xbmcgui.DialogProgress()
@@ -604,10 +602,13 @@ def list_mirros_episode(
 
 		seasons = a.seasons(link)['results']
 
-		for b in seasons:
-			if season in b['title']:
-				current_mirrors = b['episodes'][episode - 1]['mirrors']
-				mirrors += current_mirrors
+		try:
+			for b in seasons:
+				if season in b['title']:
+					current_mirrors = b['episodes'][episode - 1]['mirrors']
+					mirrors += current_mirrors
+		except IndexError:
+			pass
 
 		pDialog.update(progress, messages['episode'])
 		times += 1
@@ -652,9 +653,6 @@ def list_mirros_movie(title, metadata_art, metadata_movie, metadata_cast):
 	from utils import optimize_title
 	from difflib import SequenceMatcher
 
-	metadata_art = eval(metadata_art)
-	metadata_movie = eval(metadata_movie)
-	metadata_cast = eval(metadata_cast)
 	del metadata_movie['title']
 	xbmcplugin.setPluginCategory(_handle, "Mirror")
 	xbmcplugin.setContent(_handle, "movies")
@@ -896,9 +894,11 @@ def router(paramstring):
 			)
 
 		elif params['action'] == "show_seasons":
+			seasons = eval(params['seasons'])
+
 			list_seasons(
 				params['title'], params['tvshow_id'],
-				params['seasons']
+				seasons
 			)
 
 		elif params['action'] == "show_episodes":
@@ -914,16 +914,25 @@ def router(paramstring):
 			list_tvshow_person(params['person_id'])
 
 		elif params['action'] == "listing_movies":
+			metadata_art = eval(params['metadata_art'])
+			metadata_movie = eval(params['metadata_movie'])
+			metadata_cast = eval(params['metadata_cast'])
+
 			list_mirros_movie(
-				params['title'], params['metadata_art'],
-				params['metadata_movie'], params['metadata_cast']
+				params['title'], metadata_art,
+				metadata_movie, metadata_cast
 			)
 
 		elif params['action'] == "listing_tvshow":
+			episode = int(params['episode'])
+			metadata_art = eval(params['metadata_art'])
+			metadata_movie = eval(params['metadata_movie'])
+			metadata_cast = eval(params['metadata_cast'])
+
 			list_mirros_episode(
 				params['title'], params['season'],
-				params['episode'], params['metadata_art'],
-				params['metadata_movie'], params['metadata_cast']
+				episode, metadata_art,
+				metadata_movie, metadata_cast
 			)
 
 		elif params['action'] == "person_page":

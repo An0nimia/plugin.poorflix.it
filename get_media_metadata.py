@@ -55,6 +55,11 @@ def get_infos_tvshow(tvshow_id):
 
 	metadata_cast = moviedbutils.get_cast_dict(cast_data)
 	seasons = tvshow_data['seasons']
+
+	for a in seasons:
+		if a['season_number'] < 1:
+			seasons.remove(a)
+
 	return metadata_art, metadata_movie, metadata_cast, seasons
 
 def get_infos_season(tvshow_id, season):
