@@ -3,19 +3,18 @@
 import xbmc
 import xbmcgui
 import settings
-import xbmcaddon
 import xbmcplugin
 import get_media_metadata
+from xbmcaddon import Addon
 from urllib import urlencode
 from urlparse import parse_qsl
+from TheMovieDB import MovieDB
 from sys import argv, version_info
-from TheMovieDB.exceptions import error34
-from TheMovieDB import MovieDB, utils as moviedbutils
 
 _url = argv[0]
 _handle = int(argv[1])
 moviedb = MovieDB(settings.movieDB_api_key)
-addon = xbmcaddon.Addon()
+addon = Addon()
 addon_id = addon.getAddonInfo("id")
 kodi_path = xbmc.translatePath("special://home")
 addon_path = "%s/addons/" % kodi_path
@@ -130,6 +129,8 @@ def search_movie(
 	genre = None,
 	year = None
 ):
+	from TheMovieDB.exceptions import error34
+
 	xbmcplugin.setPluginCategory(_handle, "Result")
 	xbmcplugin.setContent(_handle, "movies")
 
@@ -202,7 +203,7 @@ def search_movie(
 		pDialog.update(progress, message)
 		times += 1
 
-	if c_page != all_page:
+	if c_page < all_page:
 		from utils import waste
 
 		list_item = xbmcgui.ListItem(
@@ -306,7 +307,7 @@ def search_tvshow(
 		xbmcplugin.addDirectoryItem(_handle, url, list_item, is_folder)
 		times += 1
 
-	if c_page != all_page:
+	if c_page < all_page:
 		from utils import waste
 
 		list_item = xbmcgui.ListItem(
@@ -337,6 +338,8 @@ def search_tvshow(
 	xbmcplugin.endOfDirectory(_handle)
 
 def search_person(person, which, page = 1):
+	from TheMovieDB import MovieDB, utils as moviedbutils
+
 	xbmcplugin.setPluginCategory(_handle, "Result")
 	xbmcplugin.setContent(_handle, "people")
 	results = moviedb.search_person(person, "it", page)
@@ -380,7 +383,7 @@ def search_person(person, which, page = 1):
 		xbmcplugin.addDirectoryItem(_handle, url, list_item, is_folder)
 		times += 1
 
-	if c_page != all_page:
+	if c_page < all_page:
 		from utils import waste
 
 		list_item = xbmcgui.ListItem(
@@ -591,7 +594,7 @@ def list_mirros_episode(
 				b = c_title
 			).ratio()
 
-			if ratio >= 0.94:
+			if ratio >= 0.90:
 				link = b['link']
 				break
 
@@ -701,7 +704,7 @@ def list_mirros_movie(title, metadata_art, metadata_movie, metadata_cast):
 				b = c_title
 			).ratio()
 
-			if ratio >= 0.94:
+			if (ratio >= 0.90) and (c_title[-1] == title[-1]):
 				link = b['link']
 				break
 
