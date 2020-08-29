@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <addon id="plugin.poorflix.it" name="Poorflix" version="1.0.0" provider-name="An0nimia">
 	<requires>
 		<import addon="xbmc.python" version="2.25.0"/>
@@ -9,9 +9,9 @@
 		<provides>video</provides>
 	</extension>
 	<extension point="xbmc.addon.metadata">
-		<summary lang="en_GB">Poorflix</summary>
-		<description lang="en_GB">Un po' come Netflix, ma per persone povere</description>
-		<disclaimer lang="en_GB">Il mio scopo? E' quello di poter permettere a chiunque, GRATIS, di poter guardare film/serie tv etc. Ogni contenuto non è di mia proprietà, ma "preso in prestito" da i vari siti di streaming italiani presenti sul web. CHILL =) W LA PIZZA</disclaimer>
+		<summary>Poorflix</summary>
+		<description>Un po' come Netflix, ma per persone povere</description>
+		<disclaimer>Il mio scopo? E' quello di poter permettere a chiunque, GRATIS, di poter guardare film/serie tv etc. Ogni contenuto non è di mia proprietà, ma "preso in prestito" da i vari siti di streaming italiani presenti sul web. CHILL =) W LA PIZZA</disclaimer>
 		<assets>
 			<icon>poorflix.png</icon>
 			<fanart>back.jpg</fanart>
@@ -20,5 +20,6 @@
 		<license>CC BY-NC-SA 4.0</license>
 		<news>Si sboccia poveri !!!</news>
 		<source>https://github.com/An0nimia/plugin.poorflix.it</source>
+		<email>An0nimia@protonmail.com</email>
 	</extension>
 </addon>
