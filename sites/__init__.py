@@ -9,9 +9,9 @@ sites_film = []
 sites_serietv = []
 
 films = [
-	"altadefinizione7", "ilgeniodellostreaming2", "altadefinizione6",
-	"altadefinizione3", "altadefinizione5", "altadefinizione4",
-	"altadefinizione2", "cineblog01", "piratestreaming"
+	"altadefinizione7", "altadefinizione1", "ilgeniodellostreaming2",
+	"altadefinizione6", "altadefinizione3", "altadefinizione5",
+	"altadefinizione4", "altadefinizione2", "cineblog01", "piratestreaming"
 ]
 
 serietvs = [
@@ -22,6 +22,7 @@ serietvs = [
 for a in films:
 	library = import_module("sites.%s" % a)
 	library.host = sites['sites'][a]
+	library.timeout = 8
 	sites_film.append(library)
 
 for a in serietvs:

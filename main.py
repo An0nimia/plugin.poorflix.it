@@ -553,9 +553,9 @@ def list_mirros_episode(
 	metadata_movie, metadata_cast
 ):
 	from sites import sites_serietv
-	from requests import ReadTimeout
 	from utils import optimize_title
 	from difflib import SequenceMatcher
+	from requests import ReadTimeout, ConnectionError
 
 	metadata_art['fanart'] = image_path % "back.jpg"
 	xbmcplugin.setPluginCategory(_handle, "Mirror")
@@ -581,7 +581,7 @@ def list_mirros_episode(
 
 		try:
 			results = a.search_serie(title)['results']
-		except ReadTimeout:
+		except (ReadTimeout, ConnectionError):
 			pDialog.update(progress, messages['episode'])
 			times += 1
 			continue
@@ -637,7 +637,6 @@ def list_mirros_episode(
 		list_item.setCast(metadata_cast)
 		list_item.setInfo("video", metadata_movie)
 		list_item.setProperty("IsPlayable", "true")
-		list_item.addStreamInfo("codec", "h264")
 
 		url = get_url(
 			action = "play", video = mirror['link'],
@@ -652,9 +651,9 @@ def list_mirros_episode(
 
 def list_mirros_movie(title, metadata_art, metadata_movie, metadata_cast):
 	from sites import sites_film
-	from requests import ReadTimeout
-	from utils import optimize_title
 	from difflib import SequenceMatcher
+	from requests import ReadTimeout, ConnectionError
+	from utils import optimize_title, check_word_sentence
 
 	del metadata_movie['title']
 	xbmcplugin.setPluginCategory(_handle, "Mirror")
@@ -691,7 +690,7 @@ def list_mirros_movie(title, metadata_art, metadata_movie, metadata_cast):
 
 		try:
 			results = a.search_film(title)['results']
-		except ReadTimeout:
+		except (ReadTimeout, ConnectionError):
 			pDialog.update(progress, new_string)
 			times += 1
 			continue
@@ -709,11 +708,21 @@ def list_mirros_movie(title, metadata_art, metadata_movie, metadata_cast):
 				break
 
 		if not link:
-			pDialog.update(progress, new_string)
-			times += 1
-			continue
+			for b in results:
+				c_title = optimize_title(b['title'])
+				if check_word_sentence(title, c_title):
+					link = b['link']
 
-		current_mirrors = a.search_mirrors(link)['results']
+			if not link:
+				pDialog.update(progress, new_string)
+				times += 1
+				continue
+
+		try:
+			current_mirrors = a.search_mirrors(link)['results']
+		except Exception as a:
+			print(a)
+			continue
 
 		for b in current_mirrors:
 			for c in qualities[:-1]:
@@ -762,7 +771,6 @@ def list_mirros_movie(title, metadata_art, metadata_movie, metadata_cast):
 		list_item.setCast(metadata_cast)
 		list_item.setInfo("video", metadata_movie)
 		list_item.setProperty("IsPlayable", "true")
-		list_item.addStreamInfo("codec", "h264")
 
 		url = get_url(
 			action = "play", video = mirror['link'],
