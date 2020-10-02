@@ -4,7 +4,7 @@ from requests import get
 from importlib import import_module
 
 where = "https://raw.githubusercontent.com/An0nimia/plugin.poorflix.it/master/sites.json"
-sites = get(where).json()
+sites = get(where).json()['sites']
 sites_film = []
 sites_serietv = []
 
@@ -21,11 +21,11 @@ serietvs = [
 
 for a in films:
 	library = import_module("sites.%s" % a)
-	library.host = sites['sites'][a]
+	library.host = sites[a]
 	library.timeout = 8
 	sites_film.append(library)
 
 for a in serietvs:
 	library = import_module("sites.%s" % a)
-	library.host = sites['sites'][a]
+	library.host = sites[a]
 	sites_serietv.append(library)

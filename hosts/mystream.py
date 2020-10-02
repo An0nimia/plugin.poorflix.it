@@ -3,6 +3,7 @@
 
 from requests import get
 from re import search, DOTALL
+from scrapers.utils import headers
 from hosts.exceptions.exceptions import VideoNotAvalaible
 
 class Metadata:
@@ -81,7 +82,7 @@ def get_emb(url):
 
 def get_video(url):
 	url = get_emb(url)
-	body = get(url).text
+	body = get(url, headers = headers).text
 
 	try:
 		match = search(r'(\$=.+?;)\s*<', body, DOTALL).group(1)

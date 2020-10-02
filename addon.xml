@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<addon id="plugin.poorflix.it" name="Poorflix" version="1.0.3" provider-name="An0nimia">
+<addon id="plugin.poorflix.it" name="Poorflix" version="1.0.5" provider-name="An0nimia">
 	<requires>
 		<import addon="xbmc.python" version="2.25.0"/>
 		<import addon="script.module.beautifulsoup4" version="4.6.0"/>

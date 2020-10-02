@@ -2,7 +2,7 @@
 
 from requests import get
 from bs4 import BeautifulSoup
-from scrapers.utils import headers, get_piece
+from scrapers.utils import headers
 
 class Metadata:
 	def __init__(self):
@@ -57,6 +57,18 @@ def get_video(url):
 		url = get_emb(url)
 
 	body = get(url, headers = headers).text
+	
+	video_url = (
+		body
+		.split("sources: [{")[1]
+		.split("\"")[1]
+		.split("\"")[0]
+	)
+
+	return video_url
+
+	#old
+	"""
 	pieces = BeautifulSoup(body, "html.parser").find_all("script")
 	piece = get_piece(pieces)
 	splitted = [""]
@@ -116,3 +128,4 @@ def get_video(url):
 		video_url += "/"
 
 	return video_url[:-1]
+	"""

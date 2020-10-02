@@ -39,8 +39,8 @@ def get_video(url):
 
 	indexs = (
 		piece
-		.split("//")[1]
-		.split("\"]")[0]
+		.split("//")[2]
+		.split("\"")[0]
 	)
 
 	video_url = "http://"
