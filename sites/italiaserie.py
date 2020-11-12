@@ -14,6 +14,7 @@ from scrapers.utils import (
 host = "https://italiaserie.eu/"
 excapes = ["Back", "back", ""]
 timeout = 4
+is_cloudflare = False
 
 if version_info.major < 3:
 	input = raw_input
