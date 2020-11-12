@@ -1,21 +1,105 @@
 {
 	"sites": {
-		"altadefinizione1": "https://altadefinizione.dance/",
-		"altadefinizione2": "https://altadefinizione01.dance/",
-		"altadefinizione3": "https://www.altadefinizione01.green/",
-		"altadefinizione4": "https://altadefinizione.care",
-		"altadefinizione5": "https://altadefinizione.sh/",
-		"altadefinizione6": "https://altadefinizione.la/",
-		"altadefinizione7": "https://altadefinizione01.house/",
-		"animeleggendari": "https://animepertutti.com/",
-		"cineblog01": "https://cineblog01.love/",
-		"eurostreaming1": "https://eurostreaming.page/",
-		"guardareserie1": "https://www.guardaserie.fit/",
-		"ilgeniodellostreaming1": "https://ilgeniodellostreaming.gy/",
-		"ilgeniodellostreaming2": "https://ilgeniodellostreaming.cam/",
-		"italiaserie": "https://italiaserie.org/",
-		"piratestreaming": "https://www.piratestreaming.deals/",
-		"seriehd": "https://www.seriehd.digital/",
-		"serietvu": "https://www.serietvu.link/"
+		"altadefinizione1": {
+			"link": "https://altadefinizione.dance/",
+			"is_cloudflare": true,
+			"timeout": 30
+		},
+
+		"altadefinizione2": {
+			"link": "https://altadefinizione01.dance/",
+			"is_cloudflare": false,
+			"timeout": 8
+		},
+
+		"altadefinizione3": {
+			"link": "https://www.altadefinizione01.green/",
+			"is_cloudflare": false,
+			"timeout": 8
+		},
+
+		"altadefinizione4": {
+			"link": "https://altadefinizione.care",
+			"is_cloudflare": false,
+			"timeout": 8
+		},
+
+		"altadefinizione5": {
+			"link": "https://altadefinizione.sh/",
+			"is_cloudflare": false,
+			"timeout": 8
+		},
+
+		"altadefinizione6": {
+			"link": "https://altadefinizione.la/",
+			"is_cloudflare": false,
+			"timeout": 8
+		},
+
+		"altadefinizione7": {
+			"link": "https://altadefinizione01.house/",
+			"is_cloudflare": false,
+			"timeout": 8
+		},
+
+		"animeleggendari": {
+			"link": "https://animepertutti.com/",
+			"is_cloudflare": false,
+			"timeout": 8
+		},
+
+		"cineblog01": {
+			"link": "https://cineblog01.love/",
+			"is_cloudflare": false,
+			"timeout": 8
+		},
+
+		"eurostreaming1": {
+			"link": "https://eurostreaming.page/",
+			"is_cloudflare": false,
+			"timeout": 8
+		},
+
+		"guardareserie1": {
+			"link": "https://www.guardaserie.fit/",
+			"is_cloudflare": false,
+			"timeout": 8
+		},
+
+		"ilgeniodellostreaming1": {
+			"link": "https://ilgeniodellostreaming.gy/",
+			"is_cloudflare": true,
+			"timeout": 30
+		},
+
+		"ilgeniodellostreaming2": {
+			"link": "https://ilgeniodellostreaming.cam/",
+			"is_cloudflare": false,
+			"timeout": 8
+		},
+
+		"italiaserie": {
+			"link": "https://italiaserie.org/",
+			"is_cloudflare": false,
+			"timeout": 8
+		},
+
+		"piratestreaming": {
+			"link": "https://www.piratestreaming.deals/",
+			"is_cloudflare": false,
+			"timeout": 8
+		},
+
+		"seriehd": {
+			"link": "https://www.seriehd.digital/",
+			"is_cloudflare": false,
+			"timeout": 8
+		},
+
+		"serietvu": {
+			"link": "https://www.serietvu.link/",
+			"is_cloudflare": false,
+			"timeout": 8
+		}
 	}
 }
