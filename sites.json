@@ -60,6 +60,18 @@
 			"timeout": 8
 		},
 
+		"eurostreaming2": {
+			"link": "https://www.eurostreaming.directory/",
+			"is_cloudflare": false,
+			"timeout": 8
+		},
+
+		"eurostreaming3": {
+			"link": "https://eurostreaming.cash/",
+			"is_cloudflare": false,
+			"timeout": 8
+		},
+
 		"guardareserie1": {
 			"link": "https://www.guardaserie.fit/",
 			"is_cloudflare": false,
