@@ -1,27 +1,56 @@
 #!/usr/bin/python
 
+from hosts import host_files
 from base64 import b64decode
 from bs4 import BeautifulSoup
 from requests import post, get
+from difflib import SequenceMatcher
 
 headers = {
 	"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:79.0) Gecko/20100101 Firefox/79.0"
 }
 
+mirrors = []
+
+for a in range(
+	len(host_files)
+):
+	if host_files[a].endswith(".py"):
+		mirrors.append(
+			host_files[a][:-3]
+		)
+
+def check_mirror(mirror):
+	array1 = []
+	array2 = []
+
+	for a in mirrors:
+		ratio = SequenceMatcher(
+			a = a,
+			b = mirror
+		).ratio()
+
+		array1.append(a)
+		array2.append(ratio)
+
+	max_value = max(array2)
+
+	if max_value <= 0.5:
+		return ""
+
+	index = array2.index(max_value)
+	mirror = array1[index]
+	return mirror	
+
 def recognize_mirror(mirror):
 	mirror = mirror.lower()
+	mirror = mirror.replace(" ", "")
 
-	if mirror == "akvid":
-		mirror = "akvideo"
-
-	elif mirror == "vidto":
-		mirror = "vidtome"
-
-	elif mirror == "gountimited":
-		mirror = "gounlimited"
-
-	elif mirror == "ciao":
+	if mirror == "ciao":
 		mirror = "vidmoly"
+
+	if not mirror in host_files:
+		mirror = check_mirror(mirror)
 
 	return mirror
 
@@ -179,6 +208,41 @@ def fasturl_decode(url):
 	url = get(url).url
 	return url
 
+def linkhub_decode(url):
+	body = get(url).text
+	parse = BeautifulSoup(body, "html.parser")
+
+	href = (
+		parse
+		.find("a", id = "get_btn")
+		.get("href")[2:]
+	)
+
+	url = "https://www.linkhub.icu%s" % href
+	body = get(url).text
+	parse = BeautifulSoup(body, "html.parser")
+
+	url = (
+		parse
+		.find("div", id = "text-url")
+		.find("a")
+		.get("href")
+	) 
+
+	return url
+
+def rapidcrypt_decode(url):
+	body = get(url).text
+	parse = BeautifulSoup(body, "html.parser")
+
+	url = (
+		parse
+		.find("a", class_ = "push_button blue")
+		.get("href")
+	)
+
+	return url
+
 def get_from_cloudflare(url):
 	url = recognize_link(
 		url.split("https:")[2]
@@ -196,11 +260,18 @@ def m_identify(link):
 		pass
 
 	link = link.replace("\r", "")
+	link = link.replace(" ", "")
 
 	c_supported = [
 		"", "fasturl", "buckler",
-		"vcrypt", "snip", "linkup",
-		"gatustox", "cowner", "rweasy"
+		"vcrypt", "snip", "linkhub", "rapidcrypt",
+		"linkup", "gatustox", "cowner", "rweasy"
+	]
+
+	functions = [
+		"", fasturl_decode, buckler_decode,
+		vcrypt_decode, snip_decode, linkhub_decode,
+		rapidcrypt_decode
 	]
 
 	indexed = c_supported.index("linkup")
@@ -217,10 +288,6 @@ def m_identify(link):
 			link = link1
 			break
 
-		elif "vcrypt" in link:
-			link1 = link
-			link = vcrypt_decode(link)
-
 		elif any(
 			a in link
 			for a in c_supported[indexed:]
@@ -228,17 +295,12 @@ def m_identify(link):
 			link1 = link
 			link = adfly_decode(link)
 
-		elif "snip" in link:
-			link1 = link
-			link = snip_decode(link)
-
-		elif "buckler" in link:
-			link1 = link
-			link = buckler_decode(link)
-
-		elif "fasturl" in link:
-			link1 = link1
-			link = fasturl_decode(link)
+		for a in c_supported[1:indexed]:
+			if a in link:
+				link1 = link
+				index = c_supported.index(a)
+				link = functions[index](link)
+				break
 
 		times += 1
 
