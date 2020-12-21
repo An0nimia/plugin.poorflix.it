@@ -8,10 +8,10 @@ from hosts.exceptions.exceptions import VideoNotAvalaible
 
 from scrapers.utils import (
 	recognize_link, recognize_mirror,
-	m_identify, decode_middle_encrypted
+	m_identify, decode_middle_encrypted, get_domain
 )
 
-host = "https://cineblog01.love/"
+host = "https://cineblog01.bid/"
 excapes = ["Back", "back", ""]
 timeout = 4
 is_cloudflare = False
@@ -57,6 +57,7 @@ def search_film(film_to_search):
 	return json
 
 def search_mirrors(film_to_see):
+	domain = get_domain(film_to_see)
 	body = get(film_to_see).text
 	parsing = BeautifulSoup(body, "html.parser")
 	parsing = parsing.find("div", class_ = "col-xs-6 col-md-4")
@@ -88,7 +89,8 @@ def search_mirrors(film_to_see):
 			data = {
 				"mirror": mirror,
 				"quality": quality,
-				"link": link_mirror
+				"link": link_mirror,
+				"domain": domain
 			}
 
 			datas.append(data)
@@ -100,8 +102,9 @@ def search_mirrors(film_to_see):
 def identify(info):
 	link = info['link']
 	mirror = info['mirror']
+	domain = info['domain']
 	link = m_identify(link)
-	return hosts[mirror].get_video(link)
+	return hosts[mirror].get_video(link, domain)
 
 def menu():
 	while True:

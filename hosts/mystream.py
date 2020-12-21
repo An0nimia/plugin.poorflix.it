@@ -9,7 +9,7 @@ from hosts.exceptions.exceptions import VideoNotAvalaible
 class Metadata:
 	def __init__(self):
 		self.logo = None
-		self.icon = None
+		self.icon = "https://mystream.to/favicon.ico"
 
 def decode(data):
 	startpos = data.find('"\\""+') + 5
@@ -80,8 +80,9 @@ def get_emb(url):
 
 	return url
 
-def get_video(url):
+def get_video(url, referer):
 	url = get_emb(url)
+	headers['Referer'] = referer
 	body = get(url, headers = headers).text
 
 	try:

@@ -1,6 +1,7 @@
 #!/usr/bin/python
 
 from requests import get
+from scrapers.utils import headers
 from hosts.exceptions.exceptions import VideoNotAvalaible
 
 class Metadata:
@@ -8,8 +9,9 @@ class Metadata:
 		self.logo = "https://vidmoly.net/img/logo-main.png"
 		self.icon = "https://vidmoly.net/img/faviconm.ico"
 
-def get_video(url):
-	body = get(url).text
+def get_video(url, referer):
+	headers['Referer'] = referer
+	body = get(url, headers = headers).text
 
 	try:
 		video_url = (

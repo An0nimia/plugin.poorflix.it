@@ -3,7 +3,7 @@
 from time import sleep
 from bs4 import BeautifulSoup
 from requests import post, get
-from scrapers.utils import get_piece
+from scrapers.utils import get_piece, headers
 from hosts.exceptions.exceptions import VideoNotAvalaible
 
 class Metadata:
@@ -11,8 +11,9 @@ class Metadata:
 		self.logo = None
 		self.icon = None
 
-def get_video(url):
-	body = get(url)
+def get_video(url, referer):
+	headers['Referer'] = referer
+	body = get(url, headers = headers)
 	parsing = BeautifulSoup(body.text, "html.parser").find_all("input")
 
 	try:

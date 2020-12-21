@@ -2,7 +2,7 @@
 
 from requests import get
 from bs4 import BeautifulSoup
-from scrapers.utils import get_piece
+from scrapers.utils import get_piece, headers
 from hosts.exceptions.exceptions import VideoNotAvalaible
 
 class Metadata:
@@ -21,9 +21,10 @@ def get_emb(url):
 
 	return url
 
-def get_video(url):
+def get_video(url, referer):
 	url = get_emb(url)
-	body = get(url).text
+	headers['Referer'] = referer
+	body = get(url, headers = headers).text
 	pieces = BeautifulSoup(body, "html.parser").find_all("script")
 
 	try:

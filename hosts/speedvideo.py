@@ -2,6 +2,7 @@
 
 from re import findall
 from requests import get
+from scrapers.utils import headers
 from hosts.exceptions.exceptions import VideoNotAvalaible
 
 class Metadata:
@@ -18,9 +19,10 @@ def get_emb(url):
 
 	return url
 
-def get_video(url):
+def get_video(url, referer):
 	url = get_emb(url)
-	body = get(url).text
+	headers['Referer'] = referer
+	body = get(url, headers = headers).text
 
 	videos =  findall(
 		r"file:[^']'([^']+)',\s*label:[^\"]\"([^\"]+)\"", body

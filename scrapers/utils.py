@@ -1,5 +1,6 @@
 #!/usr/bin/python
 
+import urlparse
 from hosts import host_files
 from base64 import b64decode
 from bs4 import BeautifulSoup
@@ -72,13 +73,8 @@ def recognize_title(title):
 	return title
 
 def get_domain(link):
-	link = (
-		link
-		.split(".")[0]
-		.split("//")[1]
-	)
-
-	return link
+	domain = urlparse(link).netloc
+	return domain
 
 def get_piece(pieces, typee = 0):
 	if_is = "(p,a,c,k,e,d)"

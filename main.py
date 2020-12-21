@@ -783,14 +783,14 @@ def list_mirros_movie(title, metadata_art, metadata_movie, metadata_cast):
 
 	xbmcplugin.endOfDirectory(_handle)
 
-def play_video(link, mirror, title):
+def play_video(link, mirror, domain, title):
 	from hosts import hosts
 	from scrapers.utils import m_identify
 	from hosts.exceptions.exceptions import VideoNotAvalaible
 
 	try:
 		link = m_identify(link)
-		path = hosts[mirror].get_video(link)
+		path = hosts[mirror].get_video(link, domain)
 
 		play_item = xbmcgui.ListItem(
 			path = path,
@@ -955,7 +955,7 @@ def router(paramstring):
 		elif params['action'] == "play":
 			play_video(
 				params['video'], params['mirror'],
-				params['title']
+				params['domain'], params['title']
 			)
 	else:
 		initialize(settings.menu_items)

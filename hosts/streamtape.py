@@ -1,7 +1,7 @@
 #!/usr/bin/python
 
 from requests import get
-from bs4 import BeautifulSoup
+#from bs4 import BeautifulSoup
 from scrapers.utils import headers
 from hosts.exceptions.exceptions import VideoNotAvalaible
 
@@ -10,7 +10,9 @@ class Metadata:
 		self.logo = "https://streamtape.com/images/Logo@2x.png"
 		self.icon = "https://streamtape.com/favicon.ico"
 
-def get_video(url):
+def get_video(url, referer):
+	referer = ""
+	headers['Referer'] = referer
 	body = get(url, headers = headers).text
 
 	"""
@@ -28,8 +30,8 @@ def get_video(url):
 
 	video_link = (
 		body
-		.split("(\"videolink\").innerHTML = \"")[1]
-		.split("\"")[0]
+		.split("elem['innerHTML']='")[1]
+		.split("'")[0]
 	)
 
 	video_url = "https:%s" % video_link

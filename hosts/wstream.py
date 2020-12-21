@@ -10,7 +10,7 @@ class Metadata:
 		self.icon = "https://wstream.video/favicon.ico"
 
 def decode_nored(url):
-	body = get(url).text
+	body = get(url, headers = headers).text
 	parse = BeautifulSoup(body, "html.parser")
 
 	script = str(
@@ -52,9 +52,11 @@ def get_emb(url):
 
 	return url
 
-def get_video(url):
-	if not "fastredirect" in url:
-		url = get_emb(url)
+def get_video(url, referer):
+	headers['Referer'] = referer
+
+	#if not "fastredirect" in url:
+		#url = get_emb(url)
 
 	body = get(url, headers = headers).text
 	
@@ -76,7 +78,7 @@ def get_video(url):
 
 	indexs = (
 		piece
-		.split("//")[2]
+		.split("//")[1]
 		.split("\"")[0]
 	)
 
@@ -117,13 +119,19 @@ def get_video(url):
 
 		elif a == 3:
 			things = s_indexs[a].split(".")
-
-			for b in things:
-				index = int(b, 36)
-				video_url += splitted[index]
-
-				if b != things[-1]:
-					video_url += "."
+			things1 = things[1].split("?")
+			things2 = things1[1].split("=")
+			index = int(things[0], 36)
+			video_url += splitted[index]
+			video_url += "."
+			index = int(things1[0], 36)
+			video_url += splitted[index]
+			video_url += "?"
+			index = int(things2[0], 36)
+			video_url += splitted[index]
+			video_url += "="
+			index = int(things2[1], 36)
+			video_url += splitted[index]
 
 		video_url += "/"
 

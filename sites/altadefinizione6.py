@@ -1,17 +1,17 @@
 #!/usr/bin/python
 
 from hosts import hosts
+from requests import get
 from sys import version_info
 from bs4 import BeautifulSoup
-from requests import post, get
 from hosts.exceptions.exceptions import VideoNotAvalaible
 
 from scrapers.utils import (
 	recognize_link, recognize_mirror,
-	m_identify, get_domain
+	m_identify, decode_middle_encrypted, get_domain
 )
 
-host = "https://altadefinizione01.house/"
+host = "https://altadefinizione.la/"
 excapes = ["Back", "back", ""]
 timeout = 4
 is_cloudflare = False
@@ -20,19 +20,9 @@ if version_info.major < 3:
 	input = raw_input
 
 def search_film(film_to_search):
-	search_data = {
-		"story": film_to_search,
-		"do": "search",
-		"subaction": "search",
-	}
-
-	body = post(
-		host,
-		params = search_data,
-		timeout = timeout
-	).text
-
-	parsing = BeautifulSoup(body, "html.parser").find_all("div", class_ = "short-entry ml-mask")
+	search_url = "{}?search={}".format(host, film_to_search)
+	body = get(search_url, timeout = timeout).text
+	parsing = BeautifulSoup(body, "html.parser")
 
 	json = {
 		"results": []
@@ -40,16 +30,14 @@ def search_film(film_to_search):
 
 	how = json['results']
 
-	for a in parsing:
-		some1 = a.find("div", class_ = "short-entry-image")
-		some2 = a.find("div", class_ = "short-entry-title")
-		image = some1.find("img").get("src")
-		link = some1.find("a").get("href")
-		title = some2.find("a").get_text()
+	for a in parsing.find_all("div", class_ = "col-lg-4 col-md-4 col-xs-4"):
+		image = a.find("img").get("src")
+		link = a.find("a").get("href")
+		title = a.find("h2").get_text()
 
 		data = {
 			"title": title,
-			"link": link,
+			"link": host + link,
 			"image": host + image
 		}
 
@@ -58,10 +46,25 @@ def search_film(film_to_search):
 	return json
 
 def search_mirrors(film_to_see):
-	domain = get_domain(film_to_see)
 	body = get(film_to_see).text
-	parsing = BeautifulSoup(body, "html.parser")
-	mirrors = parsing.find("ul", id = "HosterList")
+	parse = BeautifulSoup(body, "html.parser")
+
+	film_id_url = (
+		parse
+		.find("iframe", id = "iframeVid")
+		.get("src")
+	)
+
+	film_id_url = host + film_id_url
+	domain = "hdpass.click"#get_domain(film_id_url)
+	body = get(film_id_url).text
+	parse = BeautifulSoup(body, "html.parser")
+
+	parsing = (
+		parse
+		.find("ul", class_ = "buttons-list d-flex")
+		.find_all("li")
+	)
 
 	json = {
 		"results": []
@@ -69,33 +72,55 @@ def search_mirrors(film_to_see):
 
 	datas = json['results']
 
-	for a in mirrors.find_all("li"):
-		try:
+	for a in parsing:
+		usha = a.find("a")
+		quality = a.find("a").get_text()
+		link = host + usha.get("href")
+		body = get(link).text
+		parse = BeautifulSoup(body, "html.parser")
+
+		mirrors = (
+			parse
+			.find_all("ul", class_ = "buttons-list d-flex")[1]
+			.find_all("li")
+		)
+
+		for b in mirrors:
+			c = b.find("a")
+
 			mirror = recognize_mirror(
-				a
-				.find("img")
-				.get("alt")
-			)
-		except AttributeError:
-			mirror = "vup"
-
-		try:
-			hosts[mirror]
-
-			link_mirror = recognize_link(
-				a.get("data-link")
+				c.get_text()
 			)
 
-			data = {
-				"mirror": mirror,
-				"quality": "720p",
-				"link": link_mirror,
-				"domain": domain
-			}
+			try:
+				hosts[mirror]
+				link = host + c.get("href")
+				body = get(link).text
+				parse = BeautifulSoup(body, "html.parser")
 
-			datas.append(data)
-		except KeyError:
-			pass
+				link_enc = (
+					parse
+					.find("iframe")
+					.get("custom-src")
+				)
+
+				if not link_enc:
+					continue
+
+				link_mirror = recognize_link(
+					decode_middle_encrypted(link_enc)
+				)
+
+				data = {
+					"mirror": mirror,
+					"quality": quality,
+					"link": link_mirror,
+					"domain": domain
+				}
+
+				datas.append(data)
+			except KeyError:
+				pass
 
 	return json
 

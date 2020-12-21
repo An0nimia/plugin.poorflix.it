@@ -2,15 +2,16 @@
 
 from bs4 import BeautifulSoup
 from requests import post, get
-from scrapers.utils import get_piece
+from scrapers.utils import get_piece, headers
 
 class Metadata:
 	def __init__(self):
 		self.logo = "http://nowvid.online/images/logo.png"
 		self.icon = "http://nowvid.online/images/favicon.ico"
 
-def get_video(url):
-	body = get(url)
+def get_video(url, referer):
+	headers['Referer'] = referer
+	body = get(url, headers = headers)
 	parsing = BeautifulSoup(body.text, "html.parser").find_all("input")
 	op = parsing[0].get("value")
 	code = parsing[1].get("value")

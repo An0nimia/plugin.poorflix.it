@@ -3,29 +3,29 @@
 		"altadefinizione1": {
 			"link": "https://altadefinizione.dance/",
 			"is_cloudflare": true,
-			"timeout": 30
+			"timeout": 40
 		},
 
 		"altadefinizione2": {
-			"link": "https://altadefinizione01.dance/",
+			"link": "https://altadefinizione01.works/",
 			"is_cloudflare": false,
 			"timeout": 8
 		},
 
 		"altadefinizione3": {
-			"link": "https://www.altadefinizione01.green/",
+			"link": "https://www.altadefinizione01.photo/",
 			"is_cloudflare": false,
 			"timeout": 8
 		},
 
 		"altadefinizione4": {
-			"link": "https://altadefinizione.care",
+			"link": "https://altadefinizione.cards",
 			"is_cloudflare": false,
 			"timeout": 8
 		},
 
 		"altadefinizione5": {
-			"link": "https://altadefinizione.sh/",
+			"link": "https://altadefinizione.ph/",
 			"is_cloudflare": false,
 			"timeout": 8
 		},
@@ -37,7 +37,7 @@
 		},
 
 		"altadefinizione7": {
-			"link": "https://altadefinizione01.house/",
+			"link": "https://altadefinizione01.review/",
 			"is_cloudflare": false,
 			"timeout": 8
 		},
@@ -49,45 +49,45 @@
 		},
 
 		"cineblog01": {
-			"link": "https://cineblog01.love/",
+			"link": "https://cineblog01.bid/",
 			"is_cloudflare": false,
 			"timeout": 8
 		},
 
 		"eurostreaming1": {
-			"link": "https://eurostreaming.page/",
+			"link": "https://eurostreaming.wiki/",
 			"is_cloudflare": false,
 			"timeout": 8
 		},
 
 		"eurostreaming2": {
-			"link": "https://www.eurostreaming.directory/",
+			"link": "https://www.eurostreaming.camp/",
 			"is_cloudflare": false,
 			"timeout": 8
 		},
 
 		"eurostreaming3": {
-			"link": "https://eurostreaming.cash/",
+			"link": "https://eurostreaming.estate/",
 			"is_cloudflare": false,
 			"timeout": 8
 		},
 
 		"guardareserie1": {
-			"link": "https://www.guardaserie.fit/",
+			"link": "https://www.guardaserie.date/",
 			"is_cloudflare": false,
 			"timeout": 8
 		},
 
 		"ilgeniodellostreaming1": {
-			"link": "https://ilgeniodellostreaming.gy/",
+			"link": "https://ilgeniodellostreaming.cat/",
 			"is_cloudflare": true,
 			"timeout": 30
 		},
 
 		"ilgeniodellostreaming2": {
-			"link": "https://ilgeniodellostreaming.cam/",
+			"link": "https://ilgeniodellostreaming.gold/",
 			"is_cloudflare": false,
-			"timeout": 8
+			"timeout": 40
 		},
 
 		"italiaserie": {
@@ -97,7 +97,7 @@
 		},
 
 		"piratestreaming": {
-			"link": "https://www.piratestreaming.deals/",
+			"link": "https://www.piratestreaming.date/",
 			"is_cloudflare": false,
 			"timeout": 8
 		},

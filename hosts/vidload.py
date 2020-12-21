@@ -2,6 +2,7 @@
 
 from bs4 import BeautifulSoup
 from requests import post, get
+from scrapers.utils import headers
 from hosts.exceptions.exceptions import VideoNotAvalaible
 
 class Metadata:
@@ -9,8 +10,9 @@ class Metadata:
 		self.logo = None
 		self.icon = None
 
-def get_video(url):
-	body = get(url).text
+def get_video(url, referer):
+	headers['Referer'] = referer
+	body = get(url, headers = headers).text
 	parse = BeautifulSoup(body, "html.parser")
 
 	title = (

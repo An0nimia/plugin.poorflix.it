@@ -32,9 +32,10 @@ def right_path(body):
 
 	return body
 
-def get_video(url):
+def get_video(url, referer):
 	try:
 		url = get_emb(url)
+		headers['Referer'] = referer
 		body = get(url, headers = headers).text
 		body = right_path(body)
 		pieces = BeautifulSoup(body, "html.parser").find_all("script")

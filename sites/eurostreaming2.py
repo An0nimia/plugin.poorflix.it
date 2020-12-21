@@ -9,7 +9,7 @@ from hosts.exceptions.exceptions import VideoNotAvalaible
 
 from scrapers.utils import (
 	recognize_link, recognize_mirror,
-	recognize_title, m_identify
+	recognize_title, m_identify, get_domain
 )
 
 host = "https://www.eurostreaming.directory/"
@@ -55,6 +55,7 @@ def search_serie(serie_to_search):
 	return json
 
 def seasons(serie_to_see):
+	domain = get_domain(serie_to_see)
 	body = get(serie_to_see).text
 	parsing = BeautifulSoup(body, "html.parser")
 	titles = parsing.find_all("div", class_ = "su-spoiler-title")
@@ -114,7 +115,8 @@ def seasons(serie_to_see):
 					data = {
 						"mirror": mirror,
 						"quality": "720p",
-						"link": link_mirror
+						"link": link_mirror,
+						"domain": domain
 					}
 
 					how1.append(data)
@@ -128,8 +130,9 @@ def seasons(serie_to_see):
 def identify(info):
 	link = info['link']
 	mirror = info['mirror']
+	domain = info['domain']
 	link = m_identify(link)
-	return hosts[mirror].get_video(link)
+	return hosts[mirror].get_video(link, domain)
 
 def menu():
 	while True:

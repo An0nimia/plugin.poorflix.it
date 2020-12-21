@@ -9,10 +9,10 @@ from scrapers.excape_cloudflare import ex_Cloudflare
 
 from scrapers.utils import (
 	recognize_link, recognize_mirror,
-	m_identify, get_from_cloudflare
+	m_identify, get_from_cloudflare, get_domain
 )
 
-host = "https://ilgeniodellostreaming.gy/"
+host = "https://ilgeniodellostreaming.cat/"
 excapes = ["Back", "back", ""]
 timeout = 30
 is_cloudflare = True
@@ -71,6 +71,7 @@ def search_mirrors(film_to_see):
 	if is_cloudflare:
 		film_to_see = get_from_cloudflare(film_to_see)
 
+	domain = get_domain(film_to_see)
 	body = get(film_to_see).text
 	parsing = BeautifulSoup(body, "html.parser")
 	parsing1 = parsing.find("ul", class_ = "idTabs")
@@ -111,7 +112,8 @@ def search_mirrors(film_to_see):
 			data = {
 				"mirror": mirror,
 				"quality": quality,
-				"link": link_mirror
+				"link": link_mirror,
+				"domain": domain
 			}
 
 			datas.append(data)
@@ -122,6 +124,7 @@ def search_mirrors(film_to_see):
 
 def seasons(serie_to_see):
 	body = get(serie_to_see).text
+	domain = get_domain(serie_to_see)
 	parsing = BeautifulSoup(body, "html.parser")
 	titles = parsing.find_all("span", style = "color: #ff0000;")
 	titles += parsing.find_all("span", style = "color: #3366ff;")
@@ -229,7 +232,8 @@ def seasons(serie_to_see):
 					data = {
 						"mirror": mirror,
 						"quality": links[0][0],
-						"link": links[0][2]
+						"link": links[0][2],
+						"domain": domain
 					}
 
 					how1.append(data)
@@ -249,8 +253,9 @@ def seasons(serie_to_see):
 def identify(info):
 	link = info['link']
 	mirror = info['mirror']
+	domain = info['domain']
 	link = m_identify(link)
-	return hosts[mirror].get_video(link)
+	return hosts[mirror].get_video(link, domain)
 
 def f_menu():
 	while True:

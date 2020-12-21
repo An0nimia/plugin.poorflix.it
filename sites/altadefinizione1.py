@@ -9,12 +9,13 @@ from hosts.exceptions.exceptions import VideoNotAvalaible
 
 from scrapers.utils import (
 	recognize_link, recognize_mirror,
-	m_identify, decode_middle_encrypted, get_from_cloudflare
+	m_identify, decode_middle_encrypted,
+	get_from_cloudflare, get_domain
 )
 
 host = "https://altadefinizione.dance/"
 excapes = ["Back", "back", ""]
-timeout = 4
+timeout = 30
 is_cloudflare = True
 
 if version_info.major < 3:
@@ -40,10 +41,10 @@ def search_film(film_to_search):
 
 	how = json['results']
 
-	for a in parsing.find_all("div", class_ = "col-lg-4 col-md-4 col-xs-4"):
+	for a in parsing.find_all("div", class_ = "col-lg-3 col-md-4 col-xs-4 mb-30"):
 		image = a.find("img").get("src")
 		link = a.find("a").get("href")
-		title = a.find("h2").get_text()[1:]
+		title = a.find("h5").get_text()
 
 		data = {
 			"title": title,
@@ -69,6 +70,7 @@ def search_mirrors(film_to_see):
 		.split("&")[0]
 	)
 
+	domain = get_domain(film_id_url)
 	body = get(film_id_url).text
 	parse = BeautifulSoup(body, "html.parser")
 
@@ -124,7 +126,8 @@ def search_mirrors(film_to_see):
 				data = {
 					"mirror": mirror,
 					"quality": quality,
-					"link": link_mirror
+					"link": link_mirror,
+					"domain": domain
 				}
 
 				datas.append(data)
@@ -136,8 +139,9 @@ def search_mirrors(film_to_see):
 def identify(info):
 	link = info['link']
 	mirror = info['mirror']
+	domain = info['domain']
 	link = m_identify(link)
-	return hosts[mirror].get_video(link)
+	return hosts[mirror].get_video(link, domain)
 
 def menu():
 	while True:

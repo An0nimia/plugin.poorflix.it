@@ -9,12 +9,13 @@ from hosts.exceptions.exceptions import VideoNotAvalaible
 
 from scrapers.utils import (
 	recognize_link, recognize_mirror,
-	recognize_title, m_identify
+	recognize_title, m_identify, get_domain
 )
 
-host = "https://eurostreaming.page"
+host = "https://eurostreaming.page/"
 excapes = ["Back", "back", ""]
 timeout = 4
+is_cloudflare = False
 
 if version_info.major < 3:
 	input = raw_input
@@ -86,10 +87,11 @@ def is_episodes_page(link):
 
 def seasons(serie_to_see):
 	serie_to_see = is_episodes_page(serie_to_see)
+	domain = get_domain(serie_to_see)
 	body = get(serie_to_see).text
 	parsing = BeautifulSoup(body, "html.parser")
 	titles = parsing.find_all("div", class_ = "su-spoiler-title")
-	episodes = parsing.find_all("div", class_ = "su-spoiler-content su-clearfix")
+	episodes = parsing.find_all("div", class_ = "su-spoiler-content su-u-clearfix su-u-trim")
 
 	json = {
 		"results": []
@@ -168,7 +170,8 @@ def seasons(serie_to_see):
 					data = {
 						"mirror": mirror,
 						"quality": links[0][0],
-						"link": links[0][2]
+						"link": links[0][2],
+						"domain": domain
 					}
 
 					how1.append(data)
@@ -188,8 +191,9 @@ def seasons(serie_to_see):
 def identify(info):
 	link = info['link']
 	mirror = info['mirror']
+	domain = info['domain']
 	link = m_identify(link)
-	return hosts[mirror].get_video(link)
+	return hosts[mirror].get_video(link, domain)
 
 def menu():
 	while True:
