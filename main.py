@@ -640,7 +640,7 @@ def list_mirros_episode(
 
 		url = get_url(
 			action = "play", video = mirror['link'],
-			mirror =  mirror['mirror'], title = title
+			mirror =  mirror['mirror'], domain = mirror['domain'], title = title
 		)
 
 		is_folder = False
@@ -774,7 +774,7 @@ def list_mirros_movie(title, metadata_art, metadata_movie, metadata_cast):
 
 		url = get_url(
 			action = "play", video = mirror['link'],
-			mirror =  mirror['mirror'], title = title
+			mirror =  mirror['mirror'], domain = mirror['domain'], title = title
 		)
 
 		is_folder = False

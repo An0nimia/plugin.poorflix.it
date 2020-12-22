@@ -1,9 +1,9 @@
 #!/usr/bin/python
 
-import urlparse
 from hosts import host_files
 from base64 import b64decode
 from bs4 import BeautifulSoup
+from urlparse import urlparse
 from requests import post, get
 from difflib import SequenceMatcher
 
