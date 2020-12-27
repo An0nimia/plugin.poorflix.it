@@ -30,8 +30,8 @@ def get_video(url, referer):
 
 	video_link = (
 		body
-		.split("elem['innerHTML']='")[1]
-		.split("'")[0]
+		.split("innerHTML = \"")[1]
+		.split("\"")[0]
 	)
 
 	video_url = "https:%s" % video_link

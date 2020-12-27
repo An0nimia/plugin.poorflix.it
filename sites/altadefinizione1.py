@@ -140,6 +140,7 @@ def identify(info):
 	link = info['link']
 	mirror = info['mirror']
 	domain = info['domain']
+	#print(link, mirror, domain)
 	link = m_identify(link)
 	return hosts[mirror].get_video(link, domain)
 

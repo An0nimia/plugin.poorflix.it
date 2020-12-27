@@ -55,3 +55,5 @@ def get_video(url, referer):
 			video_url += a
 
 	return video_url
+
+print(get_video("http://nowvid.online/play/r1ipk5ur9hhv", ""))

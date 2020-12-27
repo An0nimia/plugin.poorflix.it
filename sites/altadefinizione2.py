@@ -69,11 +69,10 @@ def search_mirrors(film_to_see):
 	datas = json['results']
 
 	for a in mirrors.find_all("a"):
-		print(a.get_text()[1:-1])
 		mirror = recognize_mirror(
 			a.get_text()[1:-1]
 		)
-		print(mirror)
+
 		try:
 			hosts[mirror]
 

@@ -1,17 +1,24 @@
 #!/usr/bin/python
 
+from sys import version_info
 from hosts import host_files
 from base64 import b64decode
 from bs4 import BeautifulSoup
-from urlparse import urlparse
 from requests import post, get
 from difflib import SequenceMatcher
+
+if version_info.major < 3:
+	from urlparse import urlparse
+else:
+	from urllib.parse import urlparse
+
 
 headers = {
 	"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:79.0) Gecko/20100101 Firefox/79.0"
 }
 
 mirrors = []
+dnw = []
 
 for a in range(
 	len(host_files)
@@ -19,6 +26,11 @@ for a in range(
 	if host_files[a].endswith(".py"):
 		mirrors.append(
 			host_files[a][:-3]
+		)
+
+	if host_files[a].endswith("_dnw.py"):
+		dnw.append(
+			host_files[a][:-7]
 		)
 
 def check_mirror(mirror):
@@ -49,6 +61,9 @@ def recognize_mirror(mirror):
 
 	if mirror == "ciao":
 		mirror = "vidmoly"
+
+	if mirror in dnw:
+		return mirror
 
 	if not mirror in host_files:
 		mirror = check_mirror(mirror)

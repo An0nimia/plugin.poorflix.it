@@ -173,7 +173,7 @@ def search_movie(
 
 	for result in results:
 		if pDialog.iscanceled():
-			return
+			break
 
 		progress = 100 * times // l_results
 		title = result['title'].encode("utf-8")
@@ -282,7 +282,7 @@ def search_tvshow(
 
 	for result in results:
 		if pDialog.iscanceled():
-			return
+			break
 
 		progress = 100 * times // l_results
 		pDialog.update(progress, message)
@@ -358,7 +358,7 @@ def search_person(person, which, page = 1):
 
 	for result in results:
 		if pDialog.iscanceled():
-			return
+			break
 
 		progress = 100 * times // l_results
 		pDialog.update(progress, messages['person'])
@@ -427,7 +427,7 @@ def list_film_person(person_id):
 
 	for result in results:
 		if pDialog.iscanceled():
-			return
+			break
 
 		progress = 100 * times // l_results
 		pDialog.update(progress, messages['movie_list'])
@@ -469,7 +469,7 @@ def list_tvshow_person(person_id):
 
 	for result in results:
 		if pDialog.iscanceled():
-			return
+			break
 
 		progress = 100 * times // l_results
 		pDialog.update(progress, messages['tvshow_list'])
@@ -574,7 +574,7 @@ def list_mirros_episode(
 
 	for a in sites_serietv:
 		if pDialog.iscanceled():
-			return
+			break
 
 		progress = 100 * times // l_results
 		link = None
@@ -683,7 +683,7 @@ def list_mirros_movie(title, metadata_art, metadata_movie, metadata_cast):
 
 	for a in sites_film:
 		if pDialog.iscanceled():
-			return
+			break
 
 		progress = 100 * times // l_results
 		link = None
