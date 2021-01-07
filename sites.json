@@ -2,7 +2,7 @@
 	"sites": {
 		"altadefinizione1": {
 			"link": "https://altadefinizione.dance/",
-			"is_cloudflare": true,
+			"is_cloudflare": false,
 			"timeout": 40,
 			"works": true
 		},
