@@ -6,13 +6,14 @@ from requests import get
 from sys import version_info
 from bs4 import BeautifulSoup
 from hosts.exceptions.exceptions import VideoNotAvalaible
+from scrapers.exceptions.exceptions import ScrapingFailed
 
 from scrapers.utils import (
 	recognize_link, recognize_mirror,
 	recognize_title, m_identify, get_domain
 )
 
-host = "https://eurostreaming.page/"
+host = "https://eurostreaming.wiki/"
 excapes = ["Back", "back", ""]
 timeout = 4
 is_cloudflare = False
@@ -284,7 +285,7 @@ def menu():
 
 							try:
 								video = identify(mirrors[index])
-							except VideoNotAvalaible as a:
+							except (VideoNotAvalaible, ScrapingFailed) as a:
 								print(a)
 								continue
 

@@ -1,6 +1,7 @@
 #!/usr/bin/python
 
 from hosts import hosts
+from utils import new_way
 from sys import version_info
 from bs4 import BeautifulSoup
 from requests import post, get
@@ -61,6 +62,11 @@ def search_mirrors(film_to_see):
 	body = get(film_to_see).text
 	parsing = BeautifulSoup(body, "html.parser")
 	parsing = parsing.find("div", class_ = "col-xs-6 col-md-4")
+
+	if not parsing:
+		json = new_way(film_to_see)
+		return json
+
 	array = parsing.find_all("a")
 	del array[0]
 

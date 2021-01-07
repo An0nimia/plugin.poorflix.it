@@ -11,7 +11,7 @@ from scrapers.utils import (
 	m_identify, get_domain
 )
 
-host = "https://altadefinizione01.house/"
+host = "https://altadefinizione01.tips/"
 excapes = ["Back", "back", ""]
 timeout = 4
 is_cloudflare = False
@@ -32,7 +32,7 @@ def search_film(film_to_search):
 		timeout = timeout
 	).text
 
-	parsing = BeautifulSoup(body, "html.parser").find_all("div", class_ = "short-entry ml-mask")
+	parsing = BeautifulSoup(body, "html.parser")
 
 	json = {
 		"results": []
@@ -40,12 +40,10 @@ def search_film(film_to_search):
 
 	how = json['results']
 
-	for a in parsing:
-		some1 = a.find("div", class_ = "short-entry-image")
-		some2 = a.find("div", class_ = "short-entry-title")
-		image = some1.find("img").get("src")
-		link = some1.find("a").get("href")
-		title = some2.find("a").get_text()
+	for a in parsing.find_all("div", class_ = "col-lg-3 col-md-3 col-sm-4 col-xs-6 col-item"):
+		image = host + a.find("img").get("src")
+		link = a.find("a").get("href")
+		title = a.find("h2").get_text()
 
 		data = {
 			"title": title,
@@ -61,7 +59,7 @@ def search_mirrors(film_to_see):
 	domain = get_domain(film_to_see)
 	body = get(film_to_see).text
 	parsing = BeautifulSoup(body, "html.parser")
-	mirrors = parsing.find("ul", id = "HosterList")
+	mirrors = parsing.find("ul", class_ = "playernav")
 
 	json = {
 		"results": []
@@ -70,20 +68,15 @@ def search_mirrors(film_to_see):
 	datas = json['results']
 
 	for a in mirrors.find_all("li"):
-		try:
-			mirror = recognize_mirror(
-				a
-				.find("img")
-				.get("alt")
-			)
-		except AttributeError:
-			mirror = "vup"
+		mirror = recognize_mirror(
+			a.get_text()[1:-1]
+		)
 
 		try:
 			hosts[mirror]
 
 			link_mirror = recognize_link(
-				a.get("data-link")
+				a.find("a").get("data-target")
 			)
 
 			data = {

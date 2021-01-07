@@ -6,6 +6,7 @@ from requests import get
 from sys import version_info
 from bs4 import BeautifulSoup
 from hosts.exceptions.exceptions import VideoNotAvalaible
+from scrapers.exceptions.exceptions import ScrapingFailed
 
 from scrapers.utils import (
 	recognize_link, recognize_mirror,
@@ -291,7 +292,7 @@ def menu():
 
 							try:
 								video = identify(mirrors[index])
-							except VideoNotAvalaible as a:
+							except (VideoNotAvalaible, ScrapingFailed) as a:
 								print(a)
 								continue
 

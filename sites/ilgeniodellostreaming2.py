@@ -1,6 +1,7 @@
 #!/usr/bin/python
 
 from hosts import hosts
+from utils import new_way
 from sys import version_info
 from bs4 import BeautifulSoup
 from requests import post, get
@@ -11,7 +12,7 @@ from scrapers.utils import (
 	m_identify, get_domain
 )
 
-host = "https://ilgeniodellostreaming.cam/"
+host = "https://ilgeniodellostreaming.gold/"
 excapes = ["Back", "back", ""]
 timeout = 4
 is_cloudflare = False
@@ -60,13 +61,17 @@ def search_mirrors(film_to_see):
 	domain = get_domain(film_to_see)
 	body = get(film_to_see).text
 	parsing = BeautifulSoup(body, "html.parser")
+	options = parsing.find("ul", class_ = "options-list")
+
+	if len(options) == 3:
+		json = new_way(film_to_see)
+		return json
 
 	json = {
 		"results": []
 	}
 
 	datas = json['results']
-	options = parsing.find("ul", class_ = "options-list")
 
 	for a in options.find_all("li"):
 		option = a.find("a")

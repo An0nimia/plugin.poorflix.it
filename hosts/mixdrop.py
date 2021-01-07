@@ -13,6 +13,7 @@ class Metadata:
 def get_emb(url):
 	url = url.replace("/f/", "/e/")
 	url = url.replace("mixdrops", "mixdrop")
+	url = url.replace(".icu", ".co")
 
 	if url[-1] == "/":
 		url = url[:-1]

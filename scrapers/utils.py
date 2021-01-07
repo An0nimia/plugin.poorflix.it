@@ -6,6 +6,7 @@ from base64 import b64decode
 from bs4 import BeautifulSoup
 from requests import post, get
 from difflib import SequenceMatcher
+from scrapers.exceptions.exceptions import ScrapingFailed
 
 if version_info.major < 3:
 	from urlparse import urlparse
@@ -89,6 +90,7 @@ def recognize_title(title):
 
 def get_domain(link):
 	domain = urlparse(link).netloc
+	domain = "http://%s" % domain
 	return domain
 
 def get_piece(pieces, typee = 0):
@@ -144,13 +146,16 @@ def vcrypt_decode(url):
 		url = parse.find("iframe").get("src")
 
 	elif "wss" in url:
-		url = (
-			str(
-				parse.find("meta")
+		try:
+			url = (
+				str(
+					parse.find("meta")
+				)
+				.split("=")[2]
+				.split("\"")[0]
 			)
-			.split("=")[2]
-			.split("\"")[0]
-		)
+		except IndexError:
+			raise ScrapingFailed(url)
 
 		url = get(url, headers = headers).url
 

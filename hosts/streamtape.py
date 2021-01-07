@@ -28,11 +28,14 @@ def get_video(url, referer):
 		raise VideoNotAvalaible(url)
 	"""
 
-	video_link = (
-		body
-		.split("innerHTML = \"")[1]
-		.split("\"")[0]
-	)
+	try:
+		video_link = eval(
+			body
+			.split("innerHTML = ")[1]
+			.split(";")[0]
+		)
+	except IndexError:
+		raise VideoNotAvalaible(url)
 
 	video_url = "https:%s" % video_link
 	return video_url

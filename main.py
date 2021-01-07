@@ -787,6 +787,7 @@ def play_video(link, mirror, domain, title):
 	from hosts import hosts
 	from scrapers.utils import m_identify
 	from hosts.exceptions.exceptions import VideoNotAvalaible
+	from scrapers.exceptions.exceptions import ScrapingFailed
 
 	try:
 		link = m_identify(link)
@@ -798,7 +799,7 @@ def play_video(link, mirror, domain, title):
 		)
 
 		xbmcplugin.setResolvedUrl(_handle, True, play_item)
-	except VideoNotAvalaible:
+	except (VideoNotAvalaible, ScrapingFailed):
 		dialog = xbmcgui.Dialog()
 
 		dialog = dialog.ok(

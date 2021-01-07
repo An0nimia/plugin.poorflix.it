@@ -16,7 +16,7 @@ from scrapers.utils import (
 host = "https://altadefinizione.dance/"
 excapes = ["Back", "back", ""]
 timeout = 30
-is_cloudflare = True
+is_cloudflare = False
 
 if version_info.major < 3:
 	input = raw_input
@@ -44,7 +44,13 @@ def search_film(film_to_search):
 	for a in parsing.find_all("div", class_ = "col-lg-3 col-md-4 col-xs-4 mb-30"):
 		image = a.find("img").get("src")
 		link = a.find("a").get("href")
-		title = a.find("h5").get_text()
+
+		title = (
+			a
+			.find("h5")
+			.get_text()
+			.split(" [")[0]
+		)
 
 		data = {
 			"title": title,

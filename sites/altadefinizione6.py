@@ -56,7 +56,7 @@ def search_mirrors(film_to_see):
 	)
 
 	film_id_url = host + film_id_url
-	domain = "hdpass.click"#get_domain(film_id_url)
+	domain = "http://hdpass.click"#get_domain(film_id_url)
 	body = get(film_id_url).text
 	parse = BeautifulSoup(body, "html.parser")
 

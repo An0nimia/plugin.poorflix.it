@@ -1,6 +1,7 @@
 #!/usr/bin/python
 
 from hosts import hosts
+from utils import new_way
 from sys import version_info
 from bs4 import BeautifulSoup
 from requests import post, get
@@ -11,7 +12,7 @@ from scrapers.utils import (
 	m_identify, get_domain
 )
 
-host = "https://www.altadefinizione01.green/"
+host = "https://www.altadefinizione01.photo/"
 excapes = ["Back", "back", ""]
 timeout = 4
 is_cloudflare = False
@@ -61,6 +62,10 @@ def search_mirrors(film_to_see):
 	body = get(film_to_see).text
 	parsing = BeautifulSoup(body, "html.parser")
 	mirrors = parsing.find_all("ul", class_ = "host")[1]
+
+	if len(mirrors) == 3:
+		json = new_way(film_to_see)
+		return json
 
 	json = {
 		"results": []

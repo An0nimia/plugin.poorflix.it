@@ -22,7 +22,12 @@ serietvs = [
 
 for a in films:
 	library = import_module("sites.%s" % a)
-	c =  sites['sites'][a]
+	c = sites['sites'][a]
+	works = c['works']
+
+	if not works:
+		continue
+
 	library.host = c['link']
 	library.timeout = c['timeout']
 	library.is_cloudflare = c['is_cloudflare']
@@ -31,6 +36,11 @@ for a in films:
 for a in serietvs:
 	library = import_module("sites.%s" % a)
 	c = sites['sites'][a]
+	works = c['works']
+
+	if not works:
+		continue
+
 	library.host = c['link']
 	library.timeout = c['timeout']
 	library.is_cloudflare = c['is_cloudflare']
