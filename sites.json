@@ -3,7 +3,7 @@
 		"altadefinizione1": {
 			"link": "https://altadefinizione.dance/",
 			"is_cloudflare": false,
-			"timeout": 40,
+			"timeout": 8,
 			"works": true
 		},
 
@@ -87,7 +87,7 @@
 		"ilgeniodellostreaming2": {
 			"link": "https://ilgeniodellostreaming.gold/",
 			"is_cloudflare": false,
-			"timeout": 40,
+			"timeout": 8,
 			"works": true
 		},
 
