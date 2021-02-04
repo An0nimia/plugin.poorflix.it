@@ -9,11 +9,10 @@ from hosts.exceptions.exceptions import VideoNotAvalaible
 
 from scrapers.utils import (
 	recognize_link, recognize_mirror,
-	m_identify, decode_middle_encrypted,
-	get_from_cloudflare, get_domain
+	m_identify, get_from_cloudflare, get_domain
 )
 
-host = "https://altadefinizione.dance/"
+host = "https://altadefinizione.photo/"
 excapes = ["Back", "back", ""]
 timeout = 30
 is_cloudflare = False
@@ -107,6 +106,7 @@ def search_mirrors(film_to_see):
 
 		for b in mirrors:
 			c = b.find("a")
+
 			mirror = recognize_mirror(
 				c.get_text()
 			)
@@ -120,14 +120,13 @@ def search_mirrors(film_to_see):
 				link_enc = (
 					parse
 					.find("iframe")
-					.get("custom-src")
+					.get("src")
 				)
 
 				if not link_enc:
 					continue
 
-				link_mirror = decode_middle_encrypted(link_enc)
-				link_mirror = recognize_link(link_mirror)
+				link_mirror = recognize_link(link_enc)
 
 				data = {
 					"mirror": mirror,

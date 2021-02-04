@@ -85,8 +85,16 @@ def search_mirrors(film_to_see):
 			.split("&")[0]
 		)
 
-		link_mirror = decode_middle_encrypted(link_enc)
-		mirror = a.get_text().lower()
+		link_mirror = recognize_link(
+			decode_middle_encrypted(link_enc)
+		)
+
+		mirror = recognize_mirror(
+			a
+			.get_text()
+			.lower()
+		)
+
 		quality = "720p"
 
 		try:

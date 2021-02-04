@@ -267,14 +267,6 @@ def get_from_cloudflare(url):
 	return url
 
 def m_identify(link):
-	try:
-		if not link.endswith("/"):
-			link = decode_middle_encrypted(
-				link.split("/")[-1]
-			)
-	except:
-		pass
-
 	link = link.replace("\r", "")
 	link = link.replace(" ", "")
 
