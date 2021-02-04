@@ -8,7 +8,7 @@ def optimize_title(title):
 		title
 		.encode("utf-8")
 		.lower()
-		.replace("and", "&")
+		.replace(" and ", "&")
 		.replace("&amp;", "&")
 	)
 
