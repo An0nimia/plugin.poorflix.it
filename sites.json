@@ -57,7 +57,7 @@
 		},
 
 		"eurostreaming1": {
-			"link": "https://eurostreaming.wiki/",
+			"link": "https://eurostreaming.city/",
 			"is_cloudflare": false,
 			"timeout": 8,
 			"works": true
@@ -67,14 +67,14 @@
 			"link": "https://www.eurostreaming.camp/",
 			"is_cloudflare": false,
 			"timeout": 8,
-			"works": true
+			"works": false
 		},
 
 		"eurostreaming3": {
 			"link": "https://eurostreaming.estate/",
 			"is_cloudflare": false,
 			"timeout": 8,
-			"works": true
+			"works": false
 		},
 
 		"ilgeniodellostreaming1": {
@@ -95,14 +95,14 @@
 			"link": "https://italiaserie.space/",
 			"is_cloudflare": false,
 			"timeout": 8,
-			"works": true
+			"works": false
 		},
 
 		"piratestreaming": {
 			"link": "https://www.piratestreaming.date/",
 			"is_cloudflare": false,
 			"timeout": 8,
-			"works": true
+			"works": false
 		},
 
 		"serietvu": {
