@@ -1,21 +1,21 @@
 {
 	"sites": {
 		"altadefinizione1": {
-			"link": "https://altadefinizione.dance/",
+			"link": "https://altadefinizione.tours/",
 			"is_cloudflare": false,
 			"timeout": 8,
 			"works": true
 		},
 
 		"altadefinizione2": {
-			"link": "https://altadefinizione01.works/",
+			"link": "https://www.altadefinizione01.software/",
 			"is_cloudflare": false,
 			"timeout": 8,
 			"works": true
 		},
 
 		"altadefinizione3": {
-			"link": "https://www.altadefinizione01.photo/",
+			"link": "https://www.altadefinizione01.games/",
 			"is_cloudflare": false,
 			"timeout": 8,
 			"works": true
@@ -29,10 +29,10 @@
 		},
 
 		"altadefinizione5": {
-			"link": "https://altadefinizione.ph/",
+			"link": "https://altadefinizione.gg/",
 			"is_cloudflare": false,
 			"timeout": 8,
-			"works": true
+			"works": false
 		},
 
 		"altadefinizione6": {
@@ -43,7 +43,7 @@
 		},
 
 		"altadefinizione7": {
-			"link": "https://altadefinizione01.tips/",
+			"link": "https://altadefinizione01.tours/",
 			"is_cloudflare": false,
 			"timeout": 8,
 			"works": true
@@ -57,24 +57,24 @@
 		},
 
 		"eurostreaming1": {
-			"link": "https://eurostreaming.city/",
+			"link": "https://eurostreaming.tube/",
 			"is_cloudflare": false,
 			"timeout": 8,
 			"works": true
 		},
 
 		"eurostreaming2": {
-			"link": "https://www.eurostreaming.camp/",
+			"link": "https://www.eurostreaming.ltd/",
 			"is_cloudflare": false,
 			"timeout": 8,
-			"works": false
+			"works": true
 		},
 
 		"eurostreaming3": {
-			"link": "https://eurostreaming.estate/",
+			"link": "https://eurostreaming.app/",
 			"is_cloudflare": false,
 			"timeout": 8,
-			"works": false
+			"works": true
 		},
 
 		"ilgeniodellostreaming1": {
@@ -95,14 +95,14 @@
 			"link": "https://italiaserie.space/",
 			"is_cloudflare": false,
 			"timeout": 8,
-			"works": false
+			"works": true
 		},
 
 		"piratestreaming": {
-			"link": "https://www.piratestreaming.date/",
+			"link": "https://www.piratestreaming.guru/",
 			"is_cloudflare": false,
 			"timeout": 8,
-			"works": false
+			"works": true
 		},
 
 		"serietvu": {
