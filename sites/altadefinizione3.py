@@ -1,7 +1,6 @@
 #!/usr/bin/python
 
 from hosts import hosts
-from utils import new_way
 from sys import version_info
 from bs4 import BeautifulSoup
 from requests import post, get
@@ -11,6 +10,11 @@ from scrapers.utils import (
 	recognize_link, recognize_mirror,
 	m_identify, get_domain
 )
+
+try:
+	from utils import new_way
+except ImportError:
+	from sites.utils import new_way
 
 host = "https://www.altadefinizione01.photo/"
 excapes = ["Back", "back", ""]
@@ -63,9 +67,11 @@ def search_mirrors(film_to_see):
 	parsing = BeautifulSoup(body, "html.parser")
 	mirrors = parsing.find_all("ul", class_ = "host")[1]
 
-	if len(mirrors) == 3:
+	try:
 		json = new_way(film_to_see)
 		return json
+	except:
+		pass
 
 	json = {
 		"results": []

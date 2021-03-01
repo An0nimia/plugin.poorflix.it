@@ -3,7 +3,10 @@
 from hosts import hosts
 from requests import get
 from bs4 import BeautifulSoup
-from scrapers.utils import get_domain, recognize_mirror, recognize_link
+
+from scrapers.utils import (
+	get_domain, recognize_mirror, recognize_link
+)
 
 def new_way(film_to_see):
 	domain = get_domain(film_to_see)

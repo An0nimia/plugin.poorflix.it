@@ -1,7 +1,6 @@
 #!/usr/bin/python
 
 from hosts import hosts
-from utils import new_way
 from sys import version_info
 from bs4 import BeautifulSoup
 from requests import post, get
@@ -11,6 +10,11 @@ from scrapers.utils import (
 	recognize_link, recognize_mirror,
 	m_identify, decode_middle_encrypted, get_domain
 )
+
+try:
+	from utils import new_way
+except ImportError:
+	from sites.utils import new_way	
 
 host = "https://cineblog01.bid/"
 excapes = ["Back", "back", ""]
@@ -63,9 +67,11 @@ def search_mirrors(film_to_see):
 	parsing = BeautifulSoup(body, "html.parser")
 	parsing = parsing.find("div", class_ = "col-xs-6 col-md-4")
 
-	if not parsing:
+	try:
 		json = new_way(film_to_see)
 		return json
+	except:
+		pass
 
 	array = parsing.find_all("a")
 	del array[0]

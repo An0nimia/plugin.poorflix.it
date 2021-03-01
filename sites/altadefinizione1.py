@@ -9,7 +9,8 @@ from hosts.exceptions.exceptions import VideoNotAvalaible
 
 from scrapers.utils import (
 	recognize_link, recognize_mirror,
-	m_identify, get_from_cloudflare, get_domain
+	m_identify, get_from_cloudflare,
+	get_domain, decode_middle_encrypted
 )
 
 host = "https://altadefinizione.photo/"
@@ -117,10 +118,10 @@ def search_mirrors(film_to_see):
 				body = get(link).text
 				parse = BeautifulSoup(body, "html.parser")
 
-				link_enc = (
+				link_enc = decode_middle_encrypted(
 					parse
 					.find("iframe")
-					.get("src")
+					.get("custom-src")
 				)
 
 				if not link_enc:
