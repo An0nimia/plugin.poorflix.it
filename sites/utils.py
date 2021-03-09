@@ -5,12 +5,13 @@ from requests import get
 from bs4 import BeautifulSoup
 
 from scrapers.utils import (
-	get_domain, recognize_mirror, recognize_link
+	get_domain, recognize_mirror,
+	recognize_link, headers
 )
 
 def new_way(film_to_see):
 	domain = get_domain(film_to_see)
-	body = get(film_to_see).text
+	body = get(film_to_see, headers = headers).text
 	parsing = BeautifulSoup(body, "html.parser")
 
 	iframe = (

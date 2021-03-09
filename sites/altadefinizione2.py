@@ -11,7 +11,7 @@ from scrapers.utils import (
 	m_identify, get_domain
 )
 
-host = "https://www.altadefinizione01.works/"
+host = "https://www.altadefinizione01.software/"
 excapes = ["Back", "back", ""]
 timeout = 4
 is_cloudflare = False

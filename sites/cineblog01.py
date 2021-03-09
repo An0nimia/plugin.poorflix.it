@@ -8,7 +8,8 @@ from hosts.exceptions.exceptions import VideoNotAvalaible
 
 from scrapers.utils import (
 	recognize_link, recognize_mirror,
-	m_identify, decode_middle_encrypted, get_domain
+	m_identify, decode_middle_encrypted,
+	get_domain, headers
 )
 
 try:
@@ -34,6 +35,7 @@ def search_film(film_to_search):
 	body = post(
 		host,
 		params = search_data,
+		headers = headers,
 		timeout = timeout
 	).text
 
@@ -62,17 +64,16 @@ def search_film(film_to_search):
 	return json
 
 def search_mirrors(film_to_see):
-	domain = get_domain(film_to_see)
-	body = get(film_to_see).text
-	parsing = BeautifulSoup(body, "html.parser")
-	parsing = parsing.find("div", class_ = "col-xs-6 col-md-4")
-
 	try:
 		json = new_way(film_to_see)
 		return json
 	except:
 		pass
 
+	domain = get_domain(film_to_see)
+	body = get(film_to_see, headers = headers).text
+	parsing = BeautifulSoup(body, "html.parser")
+	parsing = parsing.find("div", class_ = "col-xs-6 col-md-4")
 	array = parsing.find_all("a")
 	del array[0]
 

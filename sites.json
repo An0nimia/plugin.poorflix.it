@@ -18,7 +18,7 @@
 			"link": "https://www.altadefinizione01.games/",
 			"is_cloudflare": false,
 			"timeout": 8,
-			"works": true
+			"works": false
 		},
 
 		"altadefinizione4": {
@@ -46,7 +46,7 @@
 			"link": "https://altadefinizione01.tours/",
 			"is_cloudflare": false,
 			"timeout": 8,
-			"works": true
+			"works": false
 		},
 
 		"cineblog01": {
@@ -57,7 +57,7 @@
 		},
 
 		"eurostreaming1": {
-			"link": "https://eurostreaming.tube/",
+			"link": "https://eurostreaming.team/",
 			"is_cloudflare": false,
 			"timeout": 8,
 			"works": true
@@ -67,7 +67,7 @@
 			"link": "https://www.eurostreaming.ltd/",
 			"is_cloudflare": false,
 			"timeout": 8,
-			"works": true
+			"works": false
 		},
 
 		"eurostreaming3": {
@@ -95,7 +95,7 @@
 			"link": "https://italiaserie.space/",
 			"is_cloudflare": false,
 			"timeout": 8,
-			"works": true
+			"works": false
 		},
 
 		"piratestreaming": {

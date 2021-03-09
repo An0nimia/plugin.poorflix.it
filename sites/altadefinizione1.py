@@ -13,7 +13,7 @@ from scrapers.utils import (
 	get_domain, decode_middle_encrypted
 )
 
-host = "https://altadefinizione.photo/"
+host = "https://altadefinizione.capital/"
 excapes = ["Back", "back", ""]
 timeout = 30
 is_cloudflare = False

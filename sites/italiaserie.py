@@ -12,7 +12,7 @@ from scrapers.utils import (
 	recognize_title, m_identify, get_domain
 )
 
-host = "https://italiaserie.space/"
+host = "https://italiaserie.fit/"
 excapes = ["Back", "back", ""]
 timeout = 4
 is_cloudflare = False

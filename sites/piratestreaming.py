@@ -11,7 +11,7 @@ from scrapers.utils import (
 	m_identify, get_domain
 )
 
-host = "https://www.piratestreaming.date/"
+host = "https://www.piratestreaming.guru/"
 excapes = ["Back", "back", ""]
 timeout = 4
 is_cloudflare = False

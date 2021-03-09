@@ -13,7 +13,7 @@ from scrapers.utils import (
 	recognize_title, m_identify, get_domain
 )
 
-host = "https://eurostreaming.cash/"
+host = "https://eurostreaming.app/"
 excapes = ["Back", "back", ""]
 timeout = 4
 is_cloudflare = False

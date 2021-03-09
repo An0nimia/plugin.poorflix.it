@@ -8,7 +8,7 @@ from hosts.exceptions.exceptions import VideoNotAvalaible
 
 from scrapers.utils import (
 	recognize_link, recognize_mirror,
-	m_identify, get_domain
+	m_identify, get_domain, headers
 )
 
 try:
@@ -34,6 +34,7 @@ def search_film(film_to_search):
 	body = post(
 		host,
 		params = search_data,
+		headers = headers,
 		timeout = timeout
 	).text
 
