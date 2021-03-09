@@ -1,7 +1,7 @@
 {
 	"sites": {
 		"altadefinizione1": {
-			"link": "https://altadefinizione.tours/",
+			"link": "https://altadefinizione.capital/",
 			"is_cloudflare": false,
 			"timeout": 8,
 			"works": true
