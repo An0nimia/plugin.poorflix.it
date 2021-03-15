@@ -36,8 +36,13 @@ def right_path(body):
 def get_video(url, referer):
 	try:
 		url = get_emb(url)
-		headers['Referer'] = referer
+		headers['Referer'] = ""
 		body = get(url, headers = headers).text
+
+		if "This embed is domain protected." in body:
+			headers['Referer'] = referer
+			body = get(url, headers = headers).text
+
 		body = right_path(body)
 		pieces = BeautifulSoup(body, "html.parser").find_all("script")
 		piece = get_piece(pieces)

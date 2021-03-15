@@ -121,9 +121,9 @@ def get_emb(url):
 def get_video(url, referer):
 	url = get_emb(url)
 
-	headers = {
-		"Cookie": get_cookie(url)
-	}
+	#headers = {
+	#	"Cookie": get_cookie(url)
+	#}
 
 	headers['Referer'] = referer
 	body = get(url, headers = headers).text

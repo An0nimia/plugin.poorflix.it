@@ -12,7 +12,7 @@ films = [
 	"altadefinizione7", "altadefinizione1", "ilgeniodellostreaming2",
 	"altadefinizione3", "altadefinizione5", "ilgeniodellostreaming1",
 	"altadefinizione4", "altadefinizione2", "altadefinizione6",
-	"piratestreaming", "cineblog01"
+	"piratestreaming", "cineblog01", "altadefinizione8"
 ]
 
 serietvs = [

@@ -1,17 +1,22 @@
 #!/usr/bin/python
 
 from hosts import hosts
-from requests import get
 from sys import version_info
 from bs4 import BeautifulSoup
+from requests import post, get
 from hosts.exceptions.exceptions import VideoNotAvalaible
 
 from scrapers.utils import (
 	recognize_link, recognize_mirror,
-	m_identify, headers, get_domain
+	m_identify, get_domain, headers
 )
 
-host = "https://altadefinizione.ph/"
+try:
+	from utils import new_way
+except ImportError:
+	from sites.utils import new_way
+
+host = "https://www.altadefinizione.name/"
 excapes = ["Back", "back", ""]
 timeout = 4
 is_cloudflare = False
@@ -20,10 +25,16 @@ if version_info.major < 3:
 	input = raw_input
 
 def search_film(film_to_search):
-	search_url = "{}?s={}".format(host, film_to_search)
+	search_data = {
+		"story": film_to_search,
+		"do": "search",
+		"subaction": "search",
+		"titleonly": "3"
+	}
 
-	body = get(
-		search_url,
+	body = post(
+		host,
+		params = search_data,
 		headers = headers,
 		timeout = timeout
 	).text
@@ -36,31 +47,32 @@ def search_film(film_to_search):
 
 	how = json['results']
 
-	for a in parsing.find_all("div", class_ = "col-lg-3 col-md-3 col-xs-3"):
+	for a in parsing.find_all("div", class_ = "col-lg-3 col-md-3 col-xs-4"):
 		image = a.find("img").get("src")
 		link = a.find("a").get("href")
-
-		title = (
-			a
-			.find("h5")
-			.get_text()
-			.split(" [")[0]
-		)
+		title = a.find("h2").get_text()
 
 		data = {
 			"title": title,
 			"link": link,
-			"image": image
+			"image": host + image
 		}
 
 		how.append(data)
 
 	return json
-	
+
 def search_mirrors(film_to_see):
+	try:
+		json = new_way(film_to_see)
+		return json
+	except:
+		pass
+
 	domain = get_domain(film_to_see)
-	body = get(film_to_see).text
+	body = get(film_to_see, headers = headers).text
 	parsing = BeautifulSoup(body, "html.parser")
+	mirrors = parsing.find("ul", id = "mirrors")
 
 	json = {
 		"results": []
@@ -68,21 +80,22 @@ def search_mirrors(film_to_see):
 
 	datas = json['results']
 
-	for a in parsing.find_all("tr", id = "movkbGKmW492336"):
-		tds = a.find_all("td")
+	for a in mirrors.find_all("li"):
+		c = a.find("a")
+
+		if not c:
+			continue
 
 		mirror = recognize_mirror(
-			tds[1].get_text()[1:]
+			c.get_text()
 		)
 
 		try:
 			hosts[mirror]
-			quality = tds[2].get_text()
+			quality = "720p"
 
 			link_mirror = recognize_link(
-				a
-				.find("a")
-				.get("href")
+				c.get("data-target")
 			)
 
 			data = {
@@ -102,7 +115,6 @@ def identify(info):
 	link = info['link']
 	mirror = info['mirror']
 	domain = info['domain']
-	#print(link, mirror, domain)
 	link = m_identify(link)
 	return hosts[mirror].get_video(link, domain)
 

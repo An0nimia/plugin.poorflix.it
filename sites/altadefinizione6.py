@@ -7,7 +7,7 @@ from bs4 import BeautifulSoup
 from hosts.exceptions.exceptions import VideoNotAvalaible
 
 from scrapers.utils import (
-	recognize_link, recognize_mirror,
+	recognize_link, recognize_mirror, headers,
 	m_identify, decode_middle_encrypted, get_domain
 )
 
@@ -21,7 +21,13 @@ if version_info.major < 3:
 
 def search_film(film_to_search):
 	search_url = "{}?search={}".format(host, film_to_search)
-	body = get(search_url, timeout = timeout).text
+
+	body = get(
+		search_url,
+		headers = headers,
+		timeout = timeout
+	).text
+
 	parsing = BeautifulSoup(body, "html.parser")
 
 	json = {
@@ -46,7 +52,7 @@ def search_film(film_to_search):
 	return json
 
 def search_mirrors(film_to_see):
-	body = get(film_to_see).text
+	body = get(film_to_see, headers = headers).text
 	parse = BeautifulSoup(body, "html.parser")
 
 	film_id_url = (

@@ -18,21 +18,7 @@
 			"link": "https://www.altadefinizione01.games/",
 			"is_cloudflare": false,
 			"timeout": 8,
-			"works": false
-		},
-
-		"altadefinizione4": {
-			"link": "https://altadefinizione.cards",
-			"is_cloudflare": false,
-			"timeout": 8,
-			"works": false
-		},
-
-		"altadefinizione5": {
-			"link": "https://altadefinizione.gg/",
-			"is_cloudflare": false,
-			"timeout": 8,
-			"works": false
+			"works": true
 		},
 
 		"altadefinizione6": {
@@ -43,10 +29,17 @@
 		},
 
 		"altadefinizione7": {
-			"link": "https://altadefinizione01.tours/",
+			"link": "https://altadefinizione01.house/",
 			"is_cloudflare": false,
 			"timeout": 8,
-			"works": false
+			"works": true
+		},
+
+		"altadefinizione8": {
+			"link": "https://www.altadefinizione.name/",
+			"is_cloudflare": false,
+			"timeout": 8,
+			"works": true
 		},
 
 		"cineblog01": {
@@ -75,27 +68,6 @@
 			"is_cloudflare": false,
 			"timeout": 8,
 			"works": true
-		},
-
-		"ilgeniodellostreaming1": {
-			"link": "https://ilgeniodellostreaming.cat/",
-			"is_cloudflare": true,
-			"timeout": 30,
-			"works": false
-		},
-
-		"ilgeniodellostreaming2": {
-			"link": "https://ilgeniodellostreaming.gold/",
-			"is_cloudflare": false,
-			"timeout": 8,
-			"works": true
-		},
-
-		"italiaserie": {
-			"link": "https://italiaserie.space/",
-			"is_cloudflare": false,
-			"timeout": 8,
-			"works": false
 		},
 
 		"piratestreaming": {

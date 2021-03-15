@@ -8,7 +8,7 @@ from hosts.exceptions.exceptions import VideoNotAvalaible
 
 from scrapers.utils import (
 	recognize_link, recognize_mirror,
-	m_identify, get_domain
+	m_identify, get_domain, headers
 )
 
 host = "https://www.piratestreaming.guru/"
@@ -21,7 +21,13 @@ if version_info.major < 3:
 
 def search(to_search):
 	search_url = "{}?s={}".format(host, to_search)
-	body = get(search_url, timeout = timeout).text
+
+	body = get(
+		search_url,
+		headers = headers,
+		timeout = timeout
+	).text
+
 	parsing = BeautifulSoup(body, "html.parser")
 
 	json = {
@@ -50,7 +56,7 @@ def search_film(film_to_search):
 	results = json['results']
 
 	for a in results:
-		body = get(a['link']).text
+		body = get(a['link'], headers = headers).text
 		parsing = BeautifulSoup(body, "html.parser")
 		iframes = parsing.find_all("iframe")
 
@@ -61,7 +67,7 @@ def search_film(film_to_search):
 
 def search_mirrors(film_to_see):
 	domain = get_domain(film_to_see)
-	body = get(film_to_see).text
+	body = get(film_to_see, headers = headers).text
 	parsing = BeautifulSoup(body, "html.parser")
 	iframes = parsing.find_all("iframe")
 	mirrors = parsing.find_all("h3")
@@ -115,7 +121,7 @@ def search_serie(serie_to_search):
 	results = json['results']
 
 	for a in results:
-		body = get(a['link']).text
+		body = get(a['link'], headers = headers).text
 		parsing = BeautifulSoup(body, "html.parser")
 		titles = parsing.find_all("div", class_ = "su-spoiler-title")
 
@@ -126,7 +132,7 @@ def search_serie(serie_to_search):
 
 def seasons(serie_to_see):
 	domain = get_domain(serie_to_see)
-	body = get(serie_to_see).text
+	body = get(serie_to_see, headers = headers).text
 	parsing = BeautifulSoup(body, "html.parser")
 	titles = parsing.find_all("div", class_ = "su-spoiler-title")
 	episodes = parsing.find_all("div", class_ = "su-link-ep")

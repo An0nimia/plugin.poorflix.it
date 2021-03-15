@@ -10,7 +10,8 @@ from scrapers.exceptions.exceptions import ScrapingFailed
 
 from scrapers.utils import (
 	recognize_link, recognize_mirror,
-	recognize_title, m_identify, get_domain
+	recognize_title, m_identify,
+	get_domain, headers
 )
 
 host = "https://eurostreaming.team/"
@@ -26,7 +27,13 @@ else:
 
 def search_serie(serie_to_search):
 	search_url = "{}?s={}".format(host, serie_to_search)
-	body = get(search_url, timeout = timeout).text
+
+	body = get(
+		search_url,
+		headers = headers,
+		timeout = timeout
+	).text
+
 	parsing = BeautifulSoup(body, "html.parser")
 
 	json = {
@@ -55,7 +62,7 @@ def search_serie(serie_to_search):
 	return json
 
 def is_episodes_page(link):
-	body = get(link).text
+	body = get(link, headers = headers).text
 	parsing = BeautifulSoup(body, "html.parser")
 
 	if "CLICCA QUI" in str(parsing):
@@ -89,7 +96,7 @@ def is_episodes_page(link):
 def seasons(serie_to_see):
 	serie_to_see = is_episodes_page(serie_to_see)
 	domain = get_domain(serie_to_see)
-	body = get(serie_to_see).text
+	body = get(serie_to_see, headers = headers).text
 	parsing = BeautifulSoup(body, "html.parser")
 	titles = parsing.find_all("div", class_ = "su-spoiler-title")
 	episodes = parsing.find_all("div", class_ = "su-spoiler-content su-u-clearfix su-u-trim")
