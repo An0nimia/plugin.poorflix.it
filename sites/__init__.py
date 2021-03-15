@@ -9,9 +9,8 @@ sites_film = []
 sites_serietv = []
 
 films = [
-	"altadefinizione7", "altadefinizione1", "ilgeniodellostreaming2",
-	"altadefinizione3", "ilgeniodellostreaming1",
-	"altadefinizione2", "altadefinizione6",
+	"altadefinizione7", "altadefinizione1",
+	"altadefinizione3", "altadefinizione2", "altadefinizione6",
 	"piratestreaming", "cineblog01", "altadefinizione8"
 ]
 
