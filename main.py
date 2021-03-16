@@ -2,6 +2,7 @@
 
 import xbmc
 import xbmcgui
+import xbmcvfs
 import settings
 import xbmcplugin
 import get_media_metadata
@@ -16,7 +17,7 @@ _handle = int(argv[1])
 moviedb = MovieDB(settings.movieDB_api_key)
 addon = Addon()
 addon_id = addon.getAddonInfo("id")
-kodi_path = xbmc.translatePath("special://home")
+kodi_path = xbmcvfs.translatePath("special://home")
 addon_path = "%s/addons/" % kodi_path
 image_path = "{}{}/%s".format(addon_path, addon_id)
 messages = settings.messages
@@ -48,6 +49,7 @@ def initialize(items):
 		metadata = {
 			"fanart": image_path % "back.jpg",
 			"poster": image_path % image,
+			"icon": image_path % image
 		}
 
 		list_item.setArt(metadata)
@@ -77,6 +79,7 @@ def show_genres(which):
 		metadata = {
 			"fanart": image_path % "back.jpg",
 			"poster": image_path % settings.movie_genres_image,
+			"icon": image_path % settings.movie_genres_image
 		}
 
 		list_item.setArt(metadata)
@@ -107,6 +110,7 @@ def show_years(which):
 		metadata = {
 			"fanart": image_path % "back.jpg",
 			"poster": image_path % settings.movie_years_image,
+			"icon": image_path % settings.movie_years_image
 		}
 
 		list_item.setArt(metadata)
@@ -213,6 +217,7 @@ def search_movie(
 		metadata = {
 			"fanart": image_path % "back.jpg",
 			"poster": image_path % settings.next_image,
+			"icon": image_path % settings.next_image
 		}
 
 		list_item.setArt(metadata)
@@ -300,7 +305,7 @@ def search_tvshow(
 
 		url = get_url(
 			action = "show_seasons", title = title,
-			tvshow_id = tvshow_id, seasons = seasons
+			tvshow_id = tvshow_id, seasons = seasons, image = metadata_art['fanart']
 		)
 
 		is_folder = True
@@ -317,6 +322,7 @@ def search_tvshow(
 		metadata = {
 			"fanart": image_path % "back.jpg",
 			"poster": image_path % settings.next_image,
+			"icon": image_path % settings.next_image
 		}
 
 		list_item.setArt(metadata)
@@ -367,7 +373,8 @@ def search_person(person, which, page = 1):
 
 		metadata_art = {
 			"poster": moviedbutils.get_image(result['profile_path']),
-			"fanart": image_path % "back.jpg"
+			"fanart": image_path % "back.jpg",
+			"icon": image_path % "back.jpg"
 		}
 
 		list_item.setArt(metadata_art)
@@ -393,6 +400,7 @@ def search_person(person, which, page = 1):
 		metadata = {
 			"fanart": image_path % "back.jpg",
 			"poster": image_path % settings.next_image,
+			"icon": image_path % settings.next_image
 		}
 
 		list_item.setArt(metadata)
@@ -497,21 +505,21 @@ def list_tvshow_person(person_id):
 	pDialog.close()
 	xbmcplugin.endOfDirectory(_handle)
 
-def list_seasons(title, tvshow_id, seasons):
+def list_seasons(title, tvshow_id, seasons, image):
 	xbmcplugin.setPluginCategory(_handle, "Result")
 	xbmcplugin.setContent(_handle, "tvshows")
 
 	for a in seasons:
 		metadata_art, metadata_movie, metadata_cast = get_media_metadata.get_infos_season(tvshow_id, a)
 		list_item = xbmcgui.ListItem(label = metadata_movie['title'])
-		metadata_art['fanart'] = image_path % "back.jpg"
+		metadata_art['fanart'] = image
 		list_item.setArt(metadata_art)
 		list_item.setCast(metadata_cast)
 		list_item.setInfo("video", metadata_movie)
 
 		url = get_url(
 			action = "show_episodes", title = title,
-			tvshow_id = tvshow_id, season = a['season_number']
+			tvshow_id = tvshow_id, season = a['season_number'], image = image
 		)
 
 		is_folder = True
@@ -519,7 +527,7 @@ def list_seasons(title, tvshow_id, seasons):
 
 	xbmcplugin.endOfDirectory(_handle)
 
-def list_episodes(title, tvshow_id, season):
+def list_episodes(title, tvshow_id, season, image):
 	xbmcplugin.setPluginCategory(_handle, "Result")
 	xbmcplugin.setContent(_handle, "episodes")
 	results = moviedb.get_season(tvshow_id, season, "it")['episodes']
@@ -527,7 +535,7 @@ def list_episodes(title, tvshow_id, season):
 	for a in results:
 		list_item = xbmcgui.ListItem(label = a['name'])
 		metadata_art, metadata_movie, metadata_cast = get_media_metadata.get_infos_episode(tvshow_id, a)
-		metadata_art['fanart'] = image_path % "back.jpg"
+		metadata_art['fanart'] = image
 		list_item.setArt(metadata_art)
 		list_item.setCast(metadata_cast)
 		list_item.setInfo("video", metadata_movie)
@@ -557,7 +565,6 @@ def list_mirros_episode(
 	from difflib import SequenceMatcher
 	from requests import ReadTimeout, ConnectionError
 
-	metadata_art['fanart'] = image_path % "back.jpg"
 	xbmcplugin.setPluginCategory(_handle, "Mirror")
 	xbmcplugin.setContent(_handle, "tvshows")
 	pDialog = xbmcgui.DialogProgress()
@@ -910,13 +917,13 @@ def router(paramstring):
 
 			list_seasons(
 				params['title'], params['tvshow_id'],
-				seasons
+				seasons, params['image']
 			)
 
 		elif params['action'] == "show_episodes":
 			list_episodes(
 				params['title'], params['tvshow_id'],
-				params['season']
+				params['season'], params['image']
 			)
 
 		elif params['action'] == "show_movies_person":

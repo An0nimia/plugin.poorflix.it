@@ -6,10 +6,12 @@ moviedb = MovieDB(movieDB_api_key)
 def get_infos_movie(movie_id):
 	movie_data = moviedb.get_movie(movie_id, "it")
 	cast_data = moviedb.get_cast_movie(movie_id)['cast']
+	poster = moviedbutils.get_image(movie_data['poster_path'])
+	fanart = moviedbutils.get_image(movie_data['backdrop_path'])
 
 	metadata_art = {
-		"poster": moviedbutils.get_image(movie_data['poster_path']),
-		"fanart": moviedbutils.get_image(movie_data['backdrop_path'])
+		"poster": poster,
+		"fanart": fanart
 	}
 
 	metadata_movie = {
@@ -33,10 +35,12 @@ def get_infos_movie(movie_id):
 def get_infos_tvshow(tvshow_id):
 	tvshow_data = moviedb.get_tvshow(tvshow_id, "it")
 	cast_data = moviedb.get_cast_tvshow(tvshow_id)['cast']
+	poster = moviedbutils.get_image(tvshow_data['poster_path'])
+	fanart = moviedbutils.get_image(tvshow_data['backdrop_path'])
 
 	metadata_art = {
-		"poster": moviedbutils.get_image(tvshow_data['poster_path']),
-		"fanart": moviedbutils.get_image(tvshow_data['backdrop_path'])
+		"poster": poster,
+		"fanart": fanart
 	}
 
 	metadata_movie = {
@@ -65,9 +69,10 @@ def get_infos_tvshow(tvshow_id):
 def get_infos_season(tvshow_id, season):
 	season_number = season['season_number']
 	cast_data = moviedb.get_cast_season(tvshow_id, season_number)['cast']
+	image_season = moviedbutils.get_image(season['poster_path'])
 
 	metadata_art = {
-		"poster": moviedbutils.get_image(season['poster_path']),
+		"poster": image_season
 	}
 
 	metadata_movie = {
@@ -86,9 +91,10 @@ def get_infos_episode(tvshow_id, episode):
 	season_number = episode['season_number']
 	episode_number = episode['episode_number']
 	cast_data = moviedb.get_cast_episode(tvshow_id, season_number, episode_number)['cast']
+	image_episode = moviedbutils.get_image(episode['still_path'])
 
 	metadata_art = {
-		"poster": moviedbutils.get_image(episode['still_path']),
+		"thumb": image_episode
 	}
 
 	metadata_movie = {
