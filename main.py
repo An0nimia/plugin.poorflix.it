@@ -2,7 +2,6 @@
 
 import xbmc
 import xbmcgui
-import xbmcvfs
 import settings
 import xbmcplugin
 import get_media_metadata
@@ -17,7 +16,7 @@ _handle = int(argv[1])
 moviedb = MovieDB(settings.movieDB_api_key)
 addon = Addon()
 addon_id = addon.getAddonInfo("id")
-kodi_path = xbmcvfs.translatePath("special://home")
+kodi_path = xbmc.translatePath("special://home")
 addon_path = "%s/addons/" % kodi_path
 image_path = "{}{}/%s".format(addon_path, addon_id)
 messages = settings.messages
