@@ -1,7 +1,7 @@
 {
 	"sites": {
 		"altadefinizione1": {
-			"link": "https://altadefinizione.capital/",
+			"link": "https://altadefinizione.cheap/",
 			"is_cloudflare": false,
 			"timeout": 8,
 			"works": true
@@ -21,11 +21,18 @@
 			"works": true
 		},
 
+		"altadefinizione5": {
+			"link": "https://altadefinizione.gg/",
+			"is_cloudflare": false,
+			"timeout": 8,
+			"works": true
+		},
+
 		"altadefinizione6": {
 			"link": "https://altadefinizione.la/",
 			"is_cloudflare": false,
 			"timeout": 8,
-			"works": true
+			"works": false
 		},
 
 		"altadefinizione7": {
@@ -64,14 +71,14 @@
 		},
 
 		"eurostreaming3": {
-			"link": "https://eurostreaming.app/",
+			"link": "https://eurostreaming.place/",
 			"is_cloudflare": false,
 			"timeout": 8,
 			"works": true
 		},
 
 		"piratestreaming": {
-			"link": "https://www.piratestreaming.guru/",
+			"link": "https://www.piratestreaming.codes/",
 			"is_cloudflare": false,
 			"timeout": 8,
 			"works": true
