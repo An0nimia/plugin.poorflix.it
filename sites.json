@@ -57,21 +57,21 @@
 		},
 
 		"eurostreaming1": {
-			"link": "https://eurostreaming.team/",
+			"link": "https://eurostreaming.center/",
 			"is_cloudflare": false,
 			"timeout": 8,
 			"works": true
 		},
 
 		"eurostreaming2": {
-			"link": "https://www.eurostreaming.ltd/",
+			"link": "https://www.eurostreaming.golf/",
 			"is_cloudflare": false,
 			"timeout": 8,
-			"works": false
+			"works": true
 		},
 
 		"eurostreaming3": {
-			"link": "https://eurostreaming.place/",
+			"link": "https://eurostreaming.blog/",
 			"is_cloudflare": false,
 			"timeout": 8,
 			"works": true
